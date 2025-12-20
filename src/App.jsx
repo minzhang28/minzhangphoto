@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import "./App.css"; // 如果你有css的话
+import "./styles.css"; 
 
 // 样式对象 (简单的内联样式，你可以保持你原本的 CSS)
 const styles = {
