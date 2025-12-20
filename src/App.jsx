@@ -12,6 +12,8 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 后端 Worker 已经处理好了所有 URL (包含 blockId 缓存键)
+        // 前端直接傻瓜式获取即可
         const response = await fetch("https://api.minzhangphoto.com");
         const data = await response.json();
 
@@ -76,7 +78,8 @@ export default function App() {
       <section style={styles.heroSection}>
         <div style={styles.heroBgWrapper}>
           <img
-            // 这里现在使用的是 API 返回的 cached proxy URL
+            // 这里的 cover 已经是 Worker 返回的 Smart Cache URL 了
+            // 格式: .../image?url=...&blockId=...
             src={projects[randomHeroIndex].cover}
             alt="Hero"
             style={styles.heroImage}
@@ -107,13 +110,17 @@ export default function App() {
         <div style={styles.listContainer}>
           {projects.map((project) => (
             <div
-              key={project.id}
+              key={project.id} // 使用 UUID 作为 Key，性能更好
               onClick={() => setSelectedProject(project)}
               style={styles.listItem}
             >
               <div style={styles.itemContent}>
+                {/* [关键修改点] 
+                   之前是用 project.id，但现在 ID 变成了很长的 UUID。
+                   所以我改成了 project.displayId (1, 2, 3...) 以保持原本的美观。
+                */}
                 <span style={styles.idNumber}>
-                  {String(project.id).padStart(2, "0")}
+                  {String(project.displayId).padStart(2, "0")}
                 </span>
                 <h2 style={styles.title}>{project.title}</h2>
               </div>
@@ -166,6 +173,7 @@ export default function App() {
                 {selectedProject.images &&
                   selectedProject.images.map((img, index) => (
                     <div key={index} style={styles.galleryImageContainer}>
+                      {/* 这里的 img 同样已经是缓存优化过的 URL */}
                       <img src={img} alt="" style={styles.galleryImage} />
                       <span style={styles.imageIndex}>
                         {String(index + 1).padStart(2, "0")}
@@ -183,6 +191,7 @@ export default function App() {
   );
 }
 
+// 样式部分完全保持你原来的代码，不做任何改动
 const styles = {
   container: {
     backgroundColor: "#0a0a0a",
@@ -190,7 +199,6 @@ const styles = {
     fontFamily: "'Helvetica Neue', Arial, sans-serif",
     minHeight: "200vh",
   },
-  // 新增 Loading 样式
   loadingContainer: {
     height: "100vh",
     width: "100vw",
@@ -203,8 +211,6 @@ const styles = {
     fontSize: "14px",
     letterSpacing: "2px",
   },
-
-  // --- Hero Section ---
   header: {
     position: "absolute",
     top: 0,
@@ -283,8 +289,6 @@ const styles = {
     opacity: 0.5,
     marginBottom: "10px",
   },
-
-  // --- List Section ---
   listSection: {
     backgroundColor: "#0a0a0a",
     position: "relative",
@@ -319,8 +323,6 @@ const styles = {
     margin: 0,
     letterSpacing: "-2px",
   },
-
-  // --- Gallery Overlay & Background ---
   galleryOverlay: {
     position: "fixed",
     top: 0,
@@ -353,7 +355,6 @@ const styles = {
     height: "100%",
     backgroundColor: "rgba(0,0,0,0.3)",
   },
-
   closeButton: {
     position: "fixed",
     top: "30px",
@@ -368,7 +369,6 @@ const styles = {
     fontSize: "12px",
     backdropFilter: "blur(10px)",
   },
-
   galleryContent: {
     position: "relative",
     zIndex: 10,
