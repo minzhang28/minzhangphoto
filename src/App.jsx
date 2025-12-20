@@ -1,59 +1,81 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import "./App.css"; // 如果你有css的话
 
-export default function App() {
-  // 1. 定义 State 来存储 API 数据
-  const [projects, setProjects] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [randomHeroIndex, setRandomHeroIndex] = useState(0);
-  const [selectedProject, setSelectedProject] = useState(null);
+// 样式对象 (简单的内联样式，你可以保持你原本的 CSS)
+const styles = {
+  container: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    padding: "20px",
+    fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
+  },
+  header: {
+    textAlign: "center",
+    marginBottom: "40px",
+    color: "#333",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+    gap: "20px",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: "12px",
+    overflow: "hidden",
+    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+    cursor: "pointer",
+  },
+  image: {
+    width: "100%",
+    height: "300px",
+    objectFit: "cover",
+    display: "block",
+  },
+  info: {
+    padding: "15px",
+  },
+  title: {
+    margin: "0 0 5px 0",
+    fontSize: "1.1rem",
+    fontWeight: "600",
+  },
+  location: {
+    margin: "0",
+    color: "#666",
+    fontSize: "0.9rem",
+  },
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "50vh",
+    fontSize: "1.5rem",
+    color: "#888",
+  },
+};
 
-  // 2. Fetch Data from Worker API
+function App() {
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState(null);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("https://api.minzhangphoto.com");
-        const data = await response.json();
-
-        setProjects(data);
-
-        // 数据加载完成后，计算随机 Hero 索引
-        if (data.length > 0) {
-          setRandomHeroIndex(Math.floor(Math.random() * data.length));
-        }
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
+    // 替换成你的 Worker 地址
+    fetch("https://api.minzhangphoto.com") 
+      .then((res) => res.json())
+      .then((data) => {
+        setPhotos(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load photos:", err);
+        setLoading(false);
+      });
   }, []);
 
-  // 3. 统计逻辑 (依赖于 projects 变化)
-  const stats = useMemo(() => {
-    if (projects.length === 0) return { totalPhotos: 0, uniqueLocations: 0 };
-
-    const totalPhotos = projects.reduce(
-      (acc, curr) => acc + (curr.images ? curr.images.length : 0),
-      0
-    );
-    const uniqueLocations = new Set(projects.map((p) => p.location)).size;
-    return { totalPhotos, uniqueLocations };
-  }, [projects]);
-
-  // 4. 禁止滚动的副作用
-  useEffect(() => {
-    if (selectedProject) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [selectedProject]);
-
-  // --- Loading 状态处理 ---
-  if (isLoading) {
+  if (loading) {
     return (
       <div style={styles.loadingContainer}>
         <span>LOADING...</span>
@@ -61,121 +83,86 @@ export default function App() {
     );
   }
 
-  // 防止 API 返回空数组导致报错
-  if (projects.length === 0) {
-    return (
-      <div style={styles.loadingContainer}>
-        <span>NO PROJECTS FOUND</span>
-      </div>
-    );
-  }
-
   return (
     <div style={styles.container}>
-      {/* --- Section 1: Hero --- */}
-      <section style={styles.heroSection}>
-        <div style={styles.heroBgWrapper}>
-          <img
-            // 这里现在使用的是 API 返回的 cached proxy URL
-            src={projects[randomHeroIndex].cover}
-            alt="Hero"
-            style={styles.heroImage}
-          />
-          <div style={styles.heroOverlay} />
-        </div>
+      <header style={styles.header}>
+        <h1>MinZhang Photography</h1>
+      </header>
 
-        <header style={styles.header}>
-          <div style={styles.logo}>AMBER PROTO</div>
-          <div style={styles.logo}>INDEX</div>
-        </header>
-
-        <div style={styles.heroFooter}>
-          <div style={styles.statItem}>
-            <span style={styles.statNumber}>{stats.totalPhotos}</span>
-            <span style={styles.statLabel}>PHOTOS</span>
-          </div>
-          <div style={styles.statItem}>
-            <span style={styles.statNumber}>{stats.uniqueLocations}</span>
-            <span style={styles.statLabel}>LOCATIONS</span>
-          </div>
-          <div style={styles.scrollHint}>SCROLL TO EXPLORE</div>
-        </div>
-      </section>
-
-      {/* --- Section 2: List --- */}
-      <main style={styles.listSection}>
-        <div style={styles.listContainer}>
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              onClick={() => setSelectedProject(project)}
-              style={styles.listItem}
-            >
-              <div style={styles.itemContent}>
-                <span style={styles.idNumber}>
-                  {String(project.id).padStart(2, "0")}
-                </span>
-                <h2 style={styles.title}>{project.title}</h2>
-              </div>
-            </div>
-          ))}
-        </div>
-      </main>
-
-      {/* --- Overlay: Full Screen Gallery --- */}
-      <AnimatePresence>
-        {selectedProject && (
+      <div style={styles.grid}>
+        {photos.map((photo) => (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            style={styles.galleryOverlay}
+            layoutId={`card-${photo.id}`} // 使用 Worker 返回的唯一 UUID
+            key={photo.id}
+            style={styles.card}
+            onClick={() => setSelectedId(photo.id)}
+            whileHover={{ y: -5 }}
           >
-            {/* 1. 动态模糊背景层 */}
-            <div style={styles.galleryBackgroundWrapper}>
-              <img
-                src={selectedProject.cover}
-                alt="bg"
-                style={styles.galleryBackgroundImage}
-              />
-              <div style={styles.galleryBackgroundOverlay} />
+            {/* 关键点：直接使用 photo.cover，不要再手动拼接 URL */}
+            <motion.img
+              src={photo.cover} 
+              alt={photo.title}
+              style={styles.image}
+              layoutId={`image-${photo.id}`}
+            />
+            <div style={styles.info}>
+              <h3 style={styles.title}>{photo.title}</h3>
+              <p style={styles.location}>{photo.location}</p>
             </div>
+          </motion.div>
+        ))}
+      </div>
 
-            {/* 2. 关闭按钮 */}
-            <button
-              onClick={() => setSelectedProject(null)}
-              style={styles.closeButton}
-            >
-              CLOSE
-            </button>
-
-            {/* 3. 内容滚动容器 */}
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              style={styles.galleryContent}
-            >
-              <div style={styles.galleryHeader}>
-                <h1 style={styles.galleryTitle}>{selectedProject.title}</h1>
-                <p style={styles.galleryLocation}>{selectedProject.location}</p>
-              </div>
-
-              <div style={styles.galleryScroll}>
-                {selectedProject.images &&
-                  selectedProject.images.map((img, index) => (
-                    <div key={index} style={styles.galleryImageContainer}>
-                      <img src={img} alt="" style={styles.galleryImage} />
-                      <span style={styles.imageIndex}>
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                    </div>
-                  ))}
-
-                <div style={styles.galleryFooter}>END OF PROJECT</div>
-              </div>
-            </motion.div>
+      <AnimatePresence>
+        {selectedId && (
+          <motion.div
+            layoutId={`card-${selectedId}`}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "rgba(0,0,0,0.8)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 10,
+            }}
+            onClick={() => setSelectedId(null)}
+          >
+            {(() => {
+              const photo = photos.find((p) => p.id === selectedId);
+              if (!photo) return null;
+              return (
+                <motion.div
+                  style={{
+                    background: "#fff",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    maxWidth: "90%",
+                    maxHeight: "90%",
+                  }}
+                  onClick={(e) => e.stopPropagation()} // 防止点击图片关闭
+                >
+                  <motion.img
+                    src={photo.cover} // 这里也直接用 photo.cover
+                    layoutId={`image-${photo.id}`}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "80vh",
+                      objectFit: "contain",
+                      display: "block",
+                      borderRadius: "5px",
+                    }}
+                  />
+                  <div style={{ padding: "10px" }}>
+                    <h3>{photo.title}</h3>
+                    <p>{photo.location}</p>
+                  </div>
+                </motion.div>
+              );
+            })()}
           </motion.div>
         )}
       </AnimatePresence>
@@ -183,248 +170,4 @@ export default function App() {
   );
 }
 
-const styles = {
-  container: {
-    backgroundColor: "#0a0a0a",
-    color: "#ffffff",
-    fontFamily: "'Helvetica Neue', Arial, sans-serif",
-    minHeight: "200vh",
-  },
-  // 新增 Loading 样式
-  loadingContainer: {
-    height: "100vh",
-    width: "100vw",
-    backgroundColor: "#0a0a0a",
-    color: "white",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontFamily: "monospace",
-    fontSize: "14px",
-    letterSpacing: "2px",
-  },
-
-  // --- Hero Section ---
-  header: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    padding: "30px",
-    display: "flex",
-    justifyContent: "space-between",
-    zIndex: 20,
-    boxSizing: "border-box",
-    mixBlendMode: "difference",
-  },
-  logo: {
-    fontSize: "12px",
-    fontWeight: "bold",
-    letterSpacing: "2px",
-  },
-  heroSection: {
-    position: "relative",
-    height: "100vh",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-end",
-    overflow: "hidden",
-  },
-  heroBgWrapper: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    zIndex: 0,
-  },
-  heroImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    opacity: 0.6,
-  },
-  heroOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    background:
-      "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(10,10,10,1) 100%)",
-  },
-  heroFooter: {
-    position: "relative",
-    zIndex: 10,
-    padding: "0 30px 60px 30px",
-    display: "flex",
-    alignItems: "flex-end",
-    gap: "60px",
-  },
-  statItem: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  statNumber: {
-    fontSize: "64px",
-    fontWeight: "300",
-    lineHeight: "1",
-  },
-  statLabel: {
-    fontSize: "12px",
-    letterSpacing: "1px",
-    opacity: 0.6,
-    marginTop: "10px",
-  },
-  scrollHint: {
-    marginLeft: "auto",
-    fontSize: "12px",
-    opacity: 0.5,
-    marginBottom: "10px",
-  },
-
-  // --- List Section ---
-  listSection: {
-    backgroundColor: "#0a0a0a",
-    position: "relative",
-    zIndex: 10,
-    padding: "100px 20px",
-  },
-  listContainer: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-  listItem: {
-    borderTop: "1px solid rgba(255, 255, 255, 0.15)",
-    padding: "40px 0",
-    cursor: "pointer",
-    position: "relative",
-    zIndex: 2,
-    transition: "opacity 0.3s",
-  },
-  itemContent: {
-    display: "flex",
-    alignItems: "baseline",
-    gap: "40px",
-  },
-  idNumber: {
-    fontSize: "14px",
-    fontFamily: "monospace",
-    color: "rgba(255,255,255,0.4)",
-  },
-  title: {
-    fontSize: "60px",
-    fontWeight: "300",
-    margin: 0,
-    letterSpacing: "-2px",
-  },
-
-  // --- Gallery Overlay & Background ---
-  galleryOverlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100vh",
-    zIndex: 100,
-  },
-  galleryBackgroundWrapper: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    zIndex: 0,
-    overflow: "hidden",
-  },
-  galleryBackgroundImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    filter: "blur(40px) brightness(0.4)",
-    transform: "scale(1.1)",
-  },
-  galleryBackgroundOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0,0,0,0.3)",
-  },
-
-  closeButton: {
-    position: "fixed",
-    top: "30px",
-    right: "30px",
-    background: "none",
-    border: "1px solid rgba(255,255,255,0.5)",
-    color: "white",
-    padding: "10px 20px",
-    borderRadius: "20px",
-    cursor: "pointer",
-    zIndex: 101,
-    fontSize: "12px",
-    backdropFilter: "blur(10px)",
-  },
-
-  galleryContent: {
-    position: "relative",
-    zIndex: 10,
-    width: "100%",
-    height: "100%",
-    overflowY: "auto",
-    overflowX: "hidden",
-  },
-  galleryHeader: {
-    padding: "120px 40px 60px 40px",
-    textAlign: "center",
-  },
-  galleryTitle: {
-    fontSize: "80px",
-    margin: "0 0 20px 0",
-    fontWeight: "300",
-    letterSpacing: "-2px",
-    textShadow: "0 10px 30px rgba(0,0,0,0.5)",
-  },
-  galleryLocation: {
-    fontSize: "14px",
-    letterSpacing: "2px",
-    opacity: 0.8,
-    textTransform: "uppercase",
-  },
-  galleryScroll: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "100px",
-    paddingBottom: "100px",
-  },
-  galleryImageContainer: {
-    width: "80%",
-    maxWidth: "1000px",
-    position: "relative",
-    boxShadow: "0 20px 80px rgba(0,0,0,0.5)",
-  },
-  galleryImage: {
-    width: "100%",
-    height: "auto",
-    display: "block",
-  },
-  imageIndex: {
-    position: "absolute",
-    top: "0",
-    left: "-40px",
-    fontFamily: "monospace",
-    fontSize: "12px",
-    opacity: 0.6,
-    textShadow: "0 2px 4px rgba(0,0,0,0.5)",
-  },
-  galleryFooter: {
-    marginTop: "50px",
-    fontSize: "12px",
-    opacity: 0.5,
-    letterSpacing: "2px",
-  },
-};
+export default App;
