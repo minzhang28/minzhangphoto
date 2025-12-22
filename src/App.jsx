@@ -216,8 +216,11 @@ export default function App() {
           />
         ))}
 
-        {/* Transition Section - View All */}
-        <section style={styles.transitionSection}>
+        {/* Transition Section - View All - 现在可点击 */}
+        <section 
+          style={styles.transitionSection}
+          onClick={() => setShowNavMenu(true)}
+        >
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -228,12 +231,25 @@ export default function App() {
             <div style={styles.transitionLine} />
             <h3 style={styles.transitionTitle}>EXPLORE ALL PROJECTS</h3>
             <p style={styles.transitionSubtitle}>{allProjects.length} collections from around the world</p>
+            <button
+              style={styles.exploreButton}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = "#1a1a1a";
+                e.target.style.color = "#F5F1E8";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = "transparent";
+                e.target.style.color = "#1a1a1a";
+              }}
+            >
+              VIEW ALL
+            </button>
             <div style={styles.transitionLine} />
           </motion.div>
         </section>
       </div>
 
-      {/* All Projects List - 改成类似Quick Nav的样式 */}
+      {/* All Projects List */}
       <main style={styles.listSection}>
         {/* Quick Navigation */}
         <div style={styles.quickNav}>
@@ -644,6 +660,8 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     scrollSnapAlign: "start",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
   },
   transitionContent: {
     textAlign: "center",
@@ -665,6 +683,19 @@ const styles = {
     fontSize: "14px",
     opacity: 0.5,
     letterSpacing: "0.05em",
+    marginBottom: "30px",
+  },
+  exploreButton: {
+    padding: "16px 40px",
+    background: "transparent",
+    border: "2px solid #1a1a1a",
+    borderRadius: "30px",
+    color: "#1a1a1a",
+    fontSize: "12px",
+    letterSpacing: "0.15em",
+    fontWeight: "500",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
     marginBottom: "30px",
   },
   listSection: {
