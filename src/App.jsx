@@ -119,17 +119,9 @@ export default function App() {
     return groups;
   }, [projects]);
 
-  const scrollToProject = (projectId) => {
-    const element = document.getElementById(`project-${projectId}`);
-    if (element) {
-      const offset = 100;
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: elementPosition - offset,
-        behavior: "smooth"
-      });
-      setShowNavMenu(false);
-    }
+  const openProjectGallery = (project) => {
+    setSelectedProject(project);
+    setShowNavMenu(false);
   };
 
   useEffect(() => {
@@ -249,47 +241,6 @@ export default function App() {
         </section>
       </div>
 
-      {/* All Projects List */}
-      <main style={styles.listSection}>
-        <div style={styles.listContainer}>
-          {allProjects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              id={`project-${project.id}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ delay: index * 0.05, duration: 0.5 }}
-              onClick={() => setSelectedProject(project)}
-              style={styles.listItem}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(26,26,26,0.02)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-              }}
-            >
-              <div style={styles.itemContent}>
-                <span style={styles.idNumber}>
-                  {String(project.displayId).padStart(2, "0")}
-                </span>
-                <div style={styles.itemMain}>
-                  <h2 style={styles.title}>{project.title}</h2>
-                  <div style={styles.itemMeta}>
-                    <span>{project.location}</span>
-                    <span style={styles.metaDot}>·</span>
-                    <span>{project.count} PHOTOS</span>
-                    <span style={styles.metaDot}>·</span>
-                    <span>{project.year}</span>
-                  </div>
-                </div>
-                <div style={styles.itemArrow}>→</div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </main>
-
       {/* Footer */}
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
@@ -355,7 +306,7 @@ export default function App() {
                   allProjects.map((project) => (
                     <div
                       key={project.id}
-                      onClick={() => scrollToProject(project.id)}
+                      onClick={() => openProjectGallery(project)}
                       style={styles.navMenuItem}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = "rgba(26,26,26,0.08)";
@@ -378,7 +329,7 @@ export default function App() {
                       {locationProjects.map((project) => (
                         <div
                           key={project.id}
-                          onClick={() => scrollToProject(project.id)}
+                          onClick={() => openProjectGallery(project)}
                           style={styles.navMenuItem}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.backgroundColor = "rgba(26,26,26,0.08)";
@@ -700,10 +651,6 @@ const styles = {
     transition: "all 0.3s ease",
     marginBottom: "30px",
   },
-  listSection: {
-    backgroundColor: "#F5F1E8",
-    padding: "100px 40px",
-  },
   navOverlay: {
     position: "fixed",
     top: 0,
@@ -797,50 +744,6 @@ const styles = {
     opacity: 0.4,
     padding: "12px 16px 8px",
     fontWeight: "600",
-  },
-  listContainer: {
-    maxWidth: "1400px",
-    margin: "0 auto",
-  },
-  listItem: {
-    borderTop: "1px solid rgba(26, 26, 26, 0.08)",
-    padding: "30px 0",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
-  itemContent: {
-    display: "flex",
-    alignItems: "center",
-    gap: "40px",
-  },
-  idNumber: {
-    fontSize: "14px",
-    fontFamily: "monospace",
-    color: "rgba(26,26,26,0.3)",
-    minWidth: "40px",
-  },
-  itemMain: {
-    flex: 1,
-  },
-  title: {
-    fontSize: "clamp(24px, 4vw, 36px)",
-    fontWeight: "300",
-    margin: "0 0 8px 0",
-    letterSpacing: "-0.01em",
-  },
-  itemMeta: {
-    display: "flex",
-    gap: "12px",
-    fontSize: "13px",
-    color: "rgba(26,26,26,0.5)",
-    letterSpacing: "0.05em",
-  },
-  metaDot: {
-    opacity: 0.3,
-  },
-  itemArrow: {
-    fontSize: "24px",
-    opacity: 0.3,
   },
   footer: {
     borderTop: "1px solid rgba(26,26,26,0.08)",
