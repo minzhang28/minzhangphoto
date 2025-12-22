@@ -302,7 +302,7 @@ const styles = {
   scrollHint: {
     marginLeft: "auto",
     fontSize: "12px",
-    opacity: 0.5",
+    opacity: 0.5,
     marginBottom: "10px",
   },
   listSection: {
