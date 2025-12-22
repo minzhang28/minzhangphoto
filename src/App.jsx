@@ -158,6 +158,7 @@ export default function App() {
             style={styles.heroTitle}
           >
             <h1 style={styles.mainTitle}>MIN ZHANG</h1>
+            <p style={styles.subtitle}>PHOTOGRAPHER · STORYTELLER</p>
           </motion.div>
 
           <motion.div
@@ -220,7 +221,7 @@ export default function App() {
                     onClick={() => setFilterType("all")}
                     style={{
                       ...styles.navFilterButton,
-                      borderBottom: filterType === "all" ? "2px solid white" : "2px solid transparent"
+                      borderBottom: filterType === "all" ? "2px solid #1a1a1a" : "2px solid transparent"
                     }}
                   >
                     ALL PROJECTS
@@ -229,7 +230,7 @@ export default function App() {
                     onClick={() => setFilterType("location")}
                     style={{
                       ...styles.navFilterButton,
-                      borderBottom: filterType === "location" ? "2px solid white" : "2px solid transparent"
+                      borderBottom: filterType === "location" ? "2px solid #1a1a1a" : "2px solid transparent"
                     }}
                   >
                     BY LOCATION
@@ -292,7 +293,6 @@ export default function App() {
 
         <div style={styles.sectionHeader}>
           <h2 style={styles.sectionTitle}>ALL PROJECTS</h2>
-          <div style={styles.sectionLine} />
         </div>
 
         <div style={styles.listContainer}>
@@ -307,7 +307,7 @@ export default function App() {
               onClick={() => setSelectedProject(project)}
               style={styles.listItem}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.02)";
+                e.currentTarget.style.backgroundColor = "rgba(26,26,26,0.02)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = "transparent";
@@ -429,6 +429,12 @@ export default function App() {
                 <div style={styles.galleryFooter}>
                   <div style={styles.galleryFooterLine} />
                   <span>END OF PROJECT</span>
+                  <button
+                    onClick={() => setSelectedProject(null)}
+                    style={styles.galleryCloseButton}
+                  >
+                    CLOSE & RETURN
+                  </button>
                 </div>
               </div>
             </motion.div>
@@ -441,16 +447,16 @@ export default function App() {
 
 const styles = {
   container: {
-    backgroundColor: "#0a0a0a",
-    color: "#ffffff",
+    backgroundColor: "#F5F1E8",
+    color: "#1a1a1a",
     fontFamily: "'Helvetica Neue', -apple-system, Arial, sans-serif",
     minHeight: "100vh",
   },
   loadingContainer: {
     height: "100vh",
     width: "100vw",
-    backgroundColor: "#0a0a0a",
-    color: "white",
+    backgroundColor: "#F5F1E8",
+    color: "#1a1a1a",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -500,7 +506,7 @@ const styles = {
     left: 0,
     width: "100%",
     height: "100%",
-    background: "radial-gradient(circle at 50% 50%, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.95) 100%)",
+    background: "linear-gradient(to bottom, rgba(245,241,232,0.3) 0%, rgba(245,241,232,0.95) 100%)",
   },
   heroContent: {
     position: "relative",
@@ -579,7 +585,7 @@ const styles = {
     animation: "bounce 2s infinite",
   },
   listSection: {
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#F5F1E8",
     position: "relative",
     padding: "120px 40px",
     minHeight: "100vh",
@@ -595,11 +601,11 @@ const styles = {
     alignItems: "center",
     gap: "12px",
     padding: "12px 20px",
-    background: "rgba(255,255,255,0.05)",
+    background: "rgba(26,26,26,0.05)",
     backdropFilter: "blur(10px)",
-    border: "1px solid rgba(255,255,255,0.1)",
+    border: "1px solid rgba(26,26,26,0.1)",
     borderRadius: "30px",
-    color: "white",
+    color: "#1a1a1a",
     cursor: "pointer",
     fontSize: "12px",
     letterSpacing: "0.1em",
@@ -616,16 +622,16 @@ const styles = {
     right: "0",
     width: "380px",
     maxHeight: "70vh",
-    background: "rgba(10,10,10,0.98)",
+    background: "rgba(245,241,232,0.98)",
     backdropFilter: "blur(20px)",
-    border: "1px solid rgba(255,255,255,0.1)",
+    border: "1px solid rgba(26,26,26,0.1)",
     borderRadius: "12px",
     overflow: "hidden",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
   },
   navMenuHeader: {
     display: "flex",
-    borderBottom: "1px solid rgba(255,255,255,0.1)",
+    borderBottom: "1px solid rgba(26,26,26,0.1)",
     padding: "0 20px",
   },
   navFilterButton: {
@@ -633,7 +639,7 @@ const styles = {
     padding: "16px 0",
     background: "none",
     border: "none",
-    color: "white",
+    color: "#1a1a1a",
     fontSize: "11px",
     letterSpacing: "0.1em",
     cursor: "pointer",
@@ -705,7 +711,7 @@ const styles = {
     margin: "0 auto",
   },
   listItem: {
-    borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+    borderTop: "1px solid rgba(26, 26, 26, 0.08)",
     padding: "50px 0",
     cursor: "pointer",
     transition: "all 0.3s ease",
@@ -719,7 +725,7 @@ const styles = {
   idNumber: {
     fontSize: "14px",
     fontFamily: "monospace",
-    color: "rgba(255,255,255,0.3)",
+    color: "rgba(26,26,26,0.3)",
     minWidth: "40px",
   },
   itemMain: {
@@ -736,7 +742,7 @@ const styles = {
     display: "flex",
     gap: "12px",
     fontSize: "13px",
-    color: "rgba(255,255,255,0.5)",
+    color: "rgba(26,26,26,0.5)",
     letterSpacing: "0.05em",
   },
   metaLocation: {},
@@ -762,7 +768,7 @@ const styles = {
     height: "80px",
     overflow: "hidden",
     borderRadius: "4px",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(26,26,26,0.05)",
   },
   thumbnailImage: {
     width: "100%",
@@ -771,9 +777,9 @@ const styles = {
     transition: "transform 0.3s ease",
   },
   footer: {
-    borderTop: "1px solid rgba(255,255,255,0.08)",
+    borderTop: "1px solid rgba(26,26,26,0.08)",
     padding: "40px",
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#F5F1E8",
   },
   footerContent: {
     maxWidth: "1400px",
@@ -799,7 +805,7 @@ const styles = {
   footerLink: {
     fontSize: "11px",
     letterSpacing: "0.1em",
-    color: "rgba(255,255,255,0.6)",
+    color: "rgba(26,26,26,0.6)",
     textDecoration: "none",
     transition: "color 0.3s ease",
   },
@@ -835,16 +841,16 @@ const styles = {
     left: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(245,241,232,0.85)",
   },
   closeButton: {
     position: "fixed",
     top: "40px",
     right: "40px",
-    background: "rgba(255,255,255,0.1)",
+    background: "rgba(245,241,232,0.9)",
     backdropFilter: "blur(10px)",
-    border: "1px solid rgba(255,255,255,0.2)",
-    color: "white",
+    border: "1px solid rgba(26,26,26,0.2)",
+    color: "#1a1a1a",
     width: "44px",
     height: "44px",
     borderRadius: "50%",
@@ -921,11 +927,25 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     gap: "20px",
+    paddingBottom: "40px",
   },
   galleryFooterLine: {
     width: "60px",
     height: "1px",
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(26,26,26,0.2)",
+  },
+  galleryCloseButton: {
+    marginTop: "30px",
+    padding: "16px 40px",
+    background: "#1a1a1a",
+    border: "none",
+    borderRadius: "30px",
+    color: "#F5F1E8",
+    fontSize: "12px",
+    letterSpacing: "0.15em",
+    fontWeight: "500",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
   },
 };
 
