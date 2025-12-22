@@ -16,6 +16,8 @@ export default function App() {
   const [randomHeroIndex, setRandomHeroIndex] = useState(0);
   const [selectedProject, setSelectedProject] = useState(null);
   const [scrollY, setScrollY] = useState(0);
+  const [showNavMenu, setShowNavMenu] = useState(false);
+  const [filterType, setFilterType] = useState("all"); // "all", "location"
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -62,6 +64,30 @@ export default function App() {
     ).size;
     return { totalPhotos, uniqueLocations, totalProjects: projects.length };
   }, [projects]);
+
+  // Group projects by location
+  const projectsByLocation = useMemo(() => {
+    const groups = {};
+    projects.forEach(p => {
+      const loc = p.location || "Unknown";
+      if (!groups[loc]) groups[loc] = [];
+      groups[loc].push(p);
+    });
+    return groups;
+  }, [projects]);
+
+  const scrollToProject = (projectId) => {
+    const element = document.getElementById(`project-${projectId}`);
+    if (element) {
+      const offset = 100;
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: elementPosition - offset,
+        behavior: "smooth"
+      });
+      setShowNavMenu(false);
+    }
+  };
 
   useEffect(() => {
     if (selectedProject) {
@@ -131,8 +157,7 @@ export default function App() {
             transition={{ delay: 0.3, duration: 0.8 }}
             style={styles.heroTitle}
           >
-            <h1 style={styles.mainTitle}>VISUAL STORIES</h1>
-            <p style={styles.subtitle}>A COLLECTION OF MOMENTS FROZEN IN TIME</p>
+            <h1 style={styles.mainTitle}>MIN ZHANG</h1>
           </motion.div>
 
           <motion.div
@@ -167,6 +192,104 @@ export default function App() {
 
       {/* List Section */}
       <main style={styles.listSection}>
+        {/* Quick Navigation */}
+        <div style={styles.quickNav}>
+          <button
+            onClick={() => setShowNavMenu(!showNavMenu)}
+            style={{
+              ...styles.quickNavButton,
+              backgroundColor: showNavMenu ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.05)"
+            }}
+          >
+            <span style={styles.quickNavIcon}>☰</span>
+            <span style={styles.quickNavText}>QUICK NAV</span>
+          </button>
+
+          <AnimatePresence>
+            {showNavMenu && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                style={styles.navMenu}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div style={styles.navMenuHeader}>
+                  <button
+                    onClick={() => setFilterType("all")}
+                    style={{
+                      ...styles.navFilterButton,
+                      borderBottom: filterType === "all" ? "2px solid white" : "2px solid transparent"
+                    }}
+                  >
+                    ALL PROJECTS
+                  </button>
+                  <button
+                    onClick={() => setFilterType("location")}
+                    style={{
+                      ...styles.navFilterButton,
+                      borderBottom: filterType === "location" ? "2px solid white" : "2px solid transparent"
+                    }}
+                  >
+                    BY LOCATION
+                  </button>
+                </div>
+
+                <div style={styles.navMenuContent}>
+                  {filterType === "all" ? (
+                    // All projects list
+                    projects.map((project) => (
+                      <div
+                        key={project.id}
+                        onClick={() => scrollToProject(project.id)}
+                        style={styles.navMenuItem}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = "transparent";
+                        }}
+                      >
+                        <span style={styles.navItemNumber}>
+                          {String(project.displayId).padStart(2, "0")}
+                        </span>
+                        <span style={styles.navItemTitle}>{project.title}</span>
+                        <span style={styles.navItemLocation}>{project.location}</span>
+                      </div>
+                    ))
+                  ) : (
+                    // Group by location
+                    Object.entries(projectsByLocation).map(([location, locationProjects]) => (
+                      <div key={location} style={styles.navLocationGroup}>
+                        <div style={styles.navLocationTitle}>{location}</div>
+                        {locationProjects.map((project) => (
+                          <div
+                            key={project.id}
+                            onClick={() => scrollToProject(project.id)}
+                            style={styles.navMenuItem}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = "transparent";
+                            }}
+                          >
+                            <span style={styles.navItemNumber}>
+                              {String(project.displayId).padStart(2, "0")}
+                            </span>
+                            <span style={styles.navItemTitle}>{project.title}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
         <div style={styles.sectionHeader}>
           <h2 style={styles.sectionTitle}>ALL PROJECTS</h2>
           <div style={styles.sectionLine} />
@@ -176,6 +299,7 @@ export default function App() {
           {projects.map((project, index) => (
             <motion.div
               key={project.id}
+              id={`project-${project.id}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
@@ -459,6 +583,102 @@ const styles = {
     position: "relative",
     padding: "120px 40px",
     minHeight: "100vh",
+  },
+  quickNav: {
+    position: "fixed",
+    top: "30px",
+    right: "30px",
+    zIndex: 50,
+  },
+  quickNavButton: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "12px 20px",
+    background: "rgba(255,255,255,0.05)",
+    backdropFilter: "blur(10px)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "30px",
+    color: "white",
+    cursor: "pointer",
+    fontSize: "12px",
+    letterSpacing: "0.1em",
+    fontWeight: "500",
+    transition: "all 0.3s ease",
+  },
+  quickNavIcon: {
+    fontSize: "16px",
+  },
+  quickNavText: {},
+  navMenu: {
+    position: "absolute",
+    top: "60px",
+    right: "0",
+    width: "380px",
+    maxHeight: "70vh",
+    background: "rgba(10,10,10,0.98)",
+    backdropFilter: "blur(20px)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "12px",
+    overflow: "hidden",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+  },
+  navMenuHeader: {
+    display: "flex",
+    borderBottom: "1px solid rgba(255,255,255,0.1)",
+    padding: "0 20px",
+  },
+  navFilterButton: {
+    flex: 1,
+    padding: "16px 0",
+    background: "none",
+    border: "none",
+    color: "white",
+    fontSize: "11px",
+    letterSpacing: "0.1em",
+    cursor: "pointer",
+    transition: "opacity 0.3s ease",
+    opacity: 0.5,
+  },
+  navMenuContent: {
+    maxHeight: "calc(70vh - 50px)",
+    overflowY: "auto",
+    padding: "12px",
+  },
+  navMenuItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "12px 16px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    marginBottom: "4px",
+  },
+  navItemNumber: {
+    fontSize: "11px",
+    fontFamily: "monospace",
+    opacity: 0.4,
+    minWidth: "30px",
+  },
+  navItemTitle: {
+    flex: 1,
+    fontSize: "13px",
+    fontWeight: "400",
+  },
+  navItemLocation: {
+    fontSize: "11px",
+    opacity: 0.5,
+  },
+  navLocationGroup: {
+    marginBottom: "20px",
+  },
+  navLocationTitle: {
+    fontSize: "11px",
+    letterSpacing: "0.15em",
+    opacity: 0.4,
+    padding: "12px 16px 8px",
+    fontWeight: "600",
   },
   sectionHeader: {
     maxWidth: "1400px",
