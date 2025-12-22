@@ -1,27 +1,44 @@
+
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const API_BASE_URL = "https://api.minzhangphoto.com";
+
+// Helper function to get full image URL
+const getImageUrl = (path) => {
+  if (!path) return "";
+  if (path.startsWith("http")) return path; // Already full URL
+  return `${API_BASE_URL}${path}`; // Add base URL to relative path
+};
+
 export default function App() {
-  // 1. 定义 State 来存储 API 数据
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [randomHeroIndex, setRandomHeroIndex] = useState(0);
   const [selectedProject, setSelectedProject] = useState(null);
 
-  // 2. Fetch Data from Worker API
+  // Fetch Data from Worker API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 后端 Worker 已经处理好了所有 URL (包含 blockId 缓存键)
-        // 前端直接傻瓜式获取即可
-        const response = await fetch("https://api.minzhangphoto.com");
+        // FIXED: Use correct endpoint
+        const response = await fetch(`${API_BASE_URL}/api/collections`);
         const data = await response.json();
 
-        setProjects(data);
+        console.log("Fetched data:", data); // Debug
 
-        // 数据加载完成后，计算随机 Hero 索引
-        if (data.length > 0) {
-          setRandomHeroIndex(Math.floor(Math.random() * data.length));
+        // FIXED: Add displayId for UI compatibility
+        const processedData = data.map((item, index) => ({
+          ...item,
+          displayId: index + 1, // Add sequential display ID
+          // FIXED: Ensure 'images' field exists for gallery view
+          images: item.images || item.previewImages || [],
+        }));
+
+        setProjects(processedData);
+
+        if (processedData.length > 0) {
+          setRandomHeroIndex(Math.floor(Math.random() * processedData.length));
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -33,19 +50,21 @@ export default function App() {
     fetchData();
   }, []);
 
-  // 3. 统计逻辑 (依赖于 projects 变化)
+  // Stats calculation
   const stats = useMemo(() => {
     if (projects.length === 0) return { totalPhotos: 0, uniqueLocations: 0 };
 
     const totalPhotos = projects.reduce(
-      (acc, curr) => acc + (curr.images ? curr.images.length : 0),
+      (acc, curr) => acc + (curr.count || curr.images?.length || 0),
       0
     );
-    const uniqueLocations = new Set(projects.map((p) => p.location)).size;
+    const uniqueLocations = new Set(
+      projects.map((p) => p.location).filter(Boolean)
+    ).size;
     return { totalPhotos, uniqueLocations };
   }, [projects]);
 
-  // 4. 禁止滚动的副作用
+  // Disable scroll when gallery is open
   useEffect(() => {
     if (selectedProject) {
       document.body.style.overflow = "hidden";
@@ -54,7 +73,7 @@ export default function App() {
     }
   }, [selectedProject]);
 
-  // --- Loading 状态处理 ---
+  // Loading state
   if (isLoading) {
     return (
       <div style={styles.loadingContainer}>
@@ -63,7 +82,7 @@ export default function App() {
     );
   }
 
-  // 防止 API 返回空数组导致报错
+  // Empty state
   if (projects.length === 0) {
     return (
       <div style={styles.loadingContainer}>
@@ -74,13 +93,11 @@ export default function App() {
 
   return (
     <div style={styles.container}>
-      {/* --- Section 1: Hero --- */}
+      {/* Hero Section */}
       <section style={styles.heroSection}>
         <div style={styles.heroBgWrapper}>
           <img
-            // 这里的 cover 已经是 Worker 返回的 Smart Cache URL 了
-            // 格式: .../image?url=...&blockId=...
-            src={projects[randomHeroIndex].cover}
+            src={getImageUrl(projects[randomHeroIndex].cover)}
             alt="Hero"
             style={styles.heroImage}
           />
@@ -105,20 +122,16 @@ export default function App() {
         </div>
       </section>
 
-      {/* --- Section 2: List --- */}
+      {/* List Section */}
       <main style={styles.listSection}>
         <div style={styles.listContainer}>
           {projects.map((project) => (
             <div
-              key={project.id} // 使用 UUID 作为 Key，性能更好
+              key={project.id}
               onClick={() => setSelectedProject(project)}
               style={styles.listItem}
             >
               <div style={styles.itemContent}>
-                {/* [关键修改点] 
-                   之前是用 project.id，但现在 ID 变成了很长的 UUID。
-                   所以我改成了 project.displayId (1, 2, 3...) 以保持原本的美观。
-                */}
                 <span style={styles.idNumber}>
                   {String(project.displayId).padStart(2, "0")}
                 </span>
@@ -129,7 +142,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* --- Overlay: Full Screen Gallery --- */}
+      {/* Gallery Overlay */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
@@ -139,17 +152,17 @@ export default function App() {
             transition={{ duration: 0.5, ease: "easeInOut" }}
             style={styles.galleryOverlay}
           >
-            {/* 1. 动态模糊背景层 */}
+            {/* Blurred background */}
             <div style={styles.galleryBackgroundWrapper}>
               <img
-                src={selectedProject.cover}
+                src={getImageUrl(selectedProject.cover)}
                 alt="bg"
                 style={styles.galleryBackgroundImage}
               />
               <div style={styles.galleryBackgroundOverlay} />
             </div>
 
-            {/* 2. 关闭按钮 */}
+            {/* Close button */}
             <button
               onClick={() => setSelectedProject(null)}
               style={styles.closeButton}
@@ -157,7 +170,7 @@ export default function App() {
               CLOSE
             </button>
 
-            {/* 3. 内容滚动容器 */}
+            {/* Gallery content */}
             <motion.div
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -173,8 +186,11 @@ export default function App() {
                 {selectedProject.images &&
                   selectedProject.images.map((img, index) => (
                     <div key={index} style={styles.galleryImageContainer}>
-                      {/* 这里的 img 同样已经是缓存优化过的 URL */}
-                      <img src={img} alt="" style={styles.galleryImage} />
+                      <img
+                        src={getImageUrl(img.url || img)}
+                        alt=""
+                        style={styles.galleryImage}
+                      />
                       <span style={styles.imageIndex}>
                         {String(index + 1).padStart(2, "0")}
                       </span>
@@ -191,7 +207,7 @@ export default function App() {
   );
 }
 
-// 样式部分完全保持你原来的代码，不做任何改动
+// Styles (unchanged)
 const styles = {
   container: {
     backgroundColor: "#0a0a0a",
@@ -428,3 +444,4 @@ const styles = {
     letterSpacing: "2px",
   },
 };
+
