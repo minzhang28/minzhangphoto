@@ -191,7 +191,6 @@ export default function App() {
             style={styles.heroContent}
           >
             <h1 style={styles.mainTitle}>MIN ZHANG</h1>
-            <p style={styles.subtitle}>PHOTOGRAPHER · STORYTELLER</p>
 
             <div style={styles.statsGrid}>
               <div style={styles.statItem}>
