@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -173,17 +172,8 @@ export default function App() {
       {/* Scroll snap container */}
       <div style={styles.scrollContainer}>
         
-        {/* Hero Section */}
+        {/* Hero Section - 无背景图 */}
         <section style={styles.heroSection}>
-          <div style={styles.heroBackground}>
-            <img
-              src={getImageUrl(projects[0]?.cover)}
-              alt="Hero"
-              style={styles.heroImage}
-            />
-            <div style={styles.heroOverlay} />
-          </div>
-
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -243,7 +233,7 @@ export default function App() {
         </section>
       </div>
 
-      {/* All Projects List */}
+      {/* All Projects List - 改成类似Quick Nav的样式 */}
       <main style={styles.listSection}>
         {/* Quick Navigation */}
         <div style={styles.quickNav}>
@@ -375,18 +365,6 @@ export default function App() {
                 </div>
                 <div style={styles.itemArrow}>→</div>
               </div>
-
-              <div style={styles.thumbnailsWrapper}>
-                {project.previewImages?.slice(0, 3).map((img, i) => (
-                  <div key={i} style={styles.thumbnailItem}>
-                    <img
-                      src={getImageUrl(img)}
-                      alt=""
-                      style={styles.thumbnailImage}
-                    />
-                  </div>
-                ))}
-              </div>
             </motion.div>
           ))}
         </div>
@@ -516,7 +494,6 @@ const styles = {
     overflowY: "scroll",
     height: "100vh",
   },
-  // Hero Section
   heroSection: {
     position: "relative",
     height: "100vh",
@@ -525,22 +502,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     scrollSnapAlign: "start",
-  },
-  heroBackground: {
-    position: "absolute",
-    inset: 0,
-    zIndex: 0,
-  },
-  heroImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    opacity: 0.4,
-  },
-  heroOverlay: {
-    position: "absolute",
-    inset: 0,
-    background: "linear-gradient(to bottom, rgba(245,241,232,0.3) 0%, rgba(245,241,232,0.95) 100%)",
+    backgroundColor: "#F5F1E8",
   },
   heroContent: {
     position: "relative",
@@ -551,13 +513,7 @@ const styles = {
     fontSize: "clamp(60px, 12vw, 140px)",
     fontWeight: "200",
     letterSpacing: "-0.02em",
-    margin: "0 0 20px 0",
-  },
-  subtitle: {
-    fontSize: "clamp(12px, 2vw, 16px)",
-    letterSpacing: "0.15em",
-    opacity: 0.6,
-    marginBottom: "60px",
+    margin: "0 0 60px 0",
   },
   statsGrid: {
     display: "flex",
@@ -617,7 +573,6 @@ const styles = {
   scrollArrowDown: {
     fontSize: "16px",
   },
-  // Project Cards
   projectCard: {
     position: "relative",
     height: "100vh",
@@ -683,7 +638,6 @@ const styles = {
     cursor: "pointer",
     transition: "all 0.3s ease",
   },
-  // Transition Section
   transitionSection: {
     height: "100vh",
     display: "flex",
@@ -713,7 +667,6 @@ const styles = {
     letterSpacing: "0.05em",
     marginBottom: "30px",
   },
-  // List Section
   listSection: {
     backgroundColor: "#F5F1E8",
     padding: "100px 40px",
@@ -819,7 +772,7 @@ const styles = {
   },
   listItem: {
     borderTop: "1px solid rgba(26, 26, 26, 0.08)",
-    padding: "50px 0",
+    padding: "30px 0",
     cursor: "pointer",
     transition: "all 0.3s ease",
   },
@@ -827,7 +780,6 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "40px",
-    marginBottom: "30px",
   },
   idNumber: {
     fontSize: "14px",
@@ -839,10 +791,10 @@ const styles = {
     flex: 1,
   },
   title: {
-    fontSize: "clamp(40px, 6vw, 64px)",
-    fontWeight: "200",
-    margin: "0 0 12px 0",
-    letterSpacing: "-0.02em",
+    fontSize: "clamp(24px, 4vw, 36px)",
+    fontWeight: "300",
+    margin: "0 0 8px 0",
+    letterSpacing: "-0.01em",
   },
   itemMeta: {
     display: "flex",
@@ -855,28 +807,9 @@ const styles = {
     opacity: 0.3,
   },
   itemArrow: {
-    fontSize: "32px",
+    fontSize: "24px",
     opacity: 0.3,
   },
-  thumbnailsWrapper: {
-    display: "flex",
-    gap: "16px",
-    marginLeft: "80px",
-    opacity: 0.6,
-  },
-  thumbnailItem: {
-    width: "120px",
-    height: "80px",
-    overflow: "hidden",
-    borderRadius: "4px",
-    backgroundColor: "rgba(26,26,26,0.05)",
-  },
-  thumbnailImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  // Footer
   footer: {
     borderTop: "1px solid rgba(26,26,26,0.08)",
     padding: "40px",
@@ -913,7 +846,6 @@ const styles = {
   footerDivider: {
     opacity: 0.3,
   },
-  // Gallery Overlay
   galleryOverlay: {
     position: "fixed",
     top: 0,
@@ -1047,4 +979,3 @@ const styles = {
     transition: "all 0.3s ease",
   },
 };
-
