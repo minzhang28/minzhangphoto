@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const API_BASE_URL = "https://api.minzhangphoto.com";
@@ -150,6 +150,8 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [filterType, setFilterType] = useState("all");
+  const [showContactSheet, setShowContactSheet] = useState(false);
+  const imageRefs = useRef([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -200,6 +202,18 @@ export default function App() {
   const openProjectGallery = (project) => {
     setSelectedProject(project);
     setShowNavMenu(false);
+  };
+
+  const scrollToImage = (index) => {
+    setShowContactSheet(false);
+    setTimeout(() => {
+      if (imageRefs.current[index]) {
+        imageRefs.current[index].scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }, 400); // Wait for overlay to dissolve
   };
 
   useEffect(() => {
@@ -447,9 +461,33 @@ export default function App() {
               ✕
             </button>
 
+            {/* View Toggle Button */}
+            {!showContactSheet && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, duration: 0.3 }}
+                onClick={() => setShowContactSheet(true)}
+                style={styles.viewToggleButton}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "#2a2a2a";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "#1a1a1a";
+                }}
+              >
+                <span style={styles.viewToggleIcon}>⊞</span>
+              </motion.button>
+            )}
+
             <motion.div
               initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              animate={{
+                y: 0,
+                opacity: 1,
+                scale: showContactSheet ? 0.98 : 1,
+                filter: showContactSheet ? "blur(40px)" : "blur(0px)"
+              }}
               transition={{ delay: 0.15, duration: 0.4 }}
               style={styles.galleryContent}
             >
@@ -469,6 +507,7 @@ export default function App() {
                   selectedProject.images.map((img, index) => (
                     <motion.div
                       key={index}
+                      ref={(el) => (imageRefs.current[index] = el)}
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-200px" }}
@@ -501,6 +540,73 @@ export default function App() {
                 </div>
               </div>
             </motion.div>
+
+            {/* Contact Sheet Overlay - The Frosted Glass Grid */}
+            <AnimatePresence>
+              {showContactSheet && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  style={styles.contactSheetOverlay}
+                  onClick={() => setShowContactSheet(false)}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    style={styles.contactSheetContainer}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* Header */}
+                    <div style={styles.contactSheetHeader}>
+                      <span style={styles.contactSheetTitle}>
+                        CONTACT SHEET — {selectedProject.images.length} IMAGES
+                      </span>
+                      <button
+                        onClick={() => setShowContactSheet(false)}
+                        style={styles.contactSheetClose}
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    {/* Grid */}
+                    <div style={styles.contactSheetGrid}>
+                      {selectedProject.images.map((img, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.02, duration: 0.3 }}
+                          onClick={() => scrollToImage(index)}
+                          style={styles.contactSheetItem}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = "scale(1.05)";
+                            e.currentTarget.style.zIndex = "10";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = "scale(1)";
+                            e.currentTarget.style.zIndex = "1";
+                          }}
+                        >
+                          <img
+                            src={getImageUrl(img.url || img)}
+                            alt={`Image ${index + 1}`}
+                            style={styles.contactSheetImage}
+                          />
+                          <div style={styles.contactSheetNumber}>
+                            {String(index + 1).padStart(2, "0")}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
@@ -982,5 +1088,116 @@ const styles = {
     fontWeight: "500",
     cursor: "pointer",
     transition: "all 0.3s ease",
+  },
+  // View Toggle Button (Floating)
+  viewToggleButton: {
+    position: "fixed",
+    bottom: "40px",
+    right: "40px",
+    background: "#1a1a1a",
+    backdropFilter: "blur(10px)",
+    border: "1px solid rgba(245,241,232,0.2)",
+    color: "#F5F1E8",
+    width: "56px",
+    height: "56px",
+    borderRadius: "50%",
+    cursor: "pointer",
+    zIndex: 102,
+    fontSize: "24px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "all 0.3s ease",
+    boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
+  },
+  viewToggleIcon: {
+    lineHeight: "1",
+  },
+  // Contact Sheet Overlay - The Frosted Glass
+  contactSheetOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100vh",
+    backgroundColor: "rgba(0, 0, 0, 0.75)", // Dark smoked glass
+    backdropFilter: "blur(20px)",
+    zIndex: 103,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "40px",
+  },
+  contactSheetContainer: {
+    width: "100%",
+    maxWidth: "1400px",
+    maxHeight: "90vh",
+    background: "rgba(245, 241, 232, 0.95)", // Semi-transparent
+    backdropFilter: "blur(40px)",
+    borderRadius: "12px",
+    overflow: "hidden",
+    boxShadow: "0 30px 100px rgba(0,0,0,0.5)",
+    display: "flex",
+    flexDirection: "column",
+  },
+  contactSheetHeader: {
+    padding: "24px 32px",
+    borderBottom: "1px solid rgba(26,26,26,0.1)",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "rgba(245, 241, 232, 0.8)",
+  },
+  contactSheetTitle: {
+    fontSize: "11px",
+    letterSpacing: "0.15em",
+    fontWeight: "600",
+    color: "#1a1a1a",
+  },
+  contactSheetClose: {
+    background: "none",
+    border: "none",
+    color: "#1a1a1a",
+    fontSize: "24px",
+    cursor: "pointer",
+    padding: "8px",
+    opacity: 0.5,
+    transition: "opacity 0.3s ease",
+  },
+  contactSheetGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+    gap: "16px",
+    padding: "24px",
+    overflowY: "auto",
+    flex: 1,
+  },
+  contactSheetItem: {
+    position: "relative",
+    aspectRatio: "3 / 2",
+    borderRadius: "6px",
+    overflow: "hidden",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    backgroundColor: "#1a1a1a",
+  },
+  contactSheetImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    display: "block",
+  },
+  contactSheetNumber: {
+    position: "absolute",
+    top: "8px",
+    left: "8px",
+    fontSize: "10px",
+    fontFamily: "monospace",
+    color: "#F5F1E8",
+    backgroundColor: "rgba(26,26,26,0.7)",
+    padding: "4px 8px",
+    borderRadius: "4px",
+    backdropFilter: "blur(4px)",
   },
 };
