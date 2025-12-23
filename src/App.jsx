@@ -1151,22 +1151,25 @@ const styles = {
   contactSheetContainer: {
     width: "100%",
     maxWidth: "min(1400px, 90vw)",
-    maxHeight: "min(80vh, calc(100vh - 80px))",
+    maxHeight: "min(85vh, calc(100vh - 60px))",
     background: "rgba(26, 26, 26, 0.97)", // 纯中性深灰磨砂玻璃
     backdropFilter: "blur(50px) saturate(150%)",
     borderRadius: "16px",
     overflow: "hidden",
     boxShadow: "0 40px 120px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)",
-    padding: "20px", // 减少padding让内容更大
+    display: "flex",
+    flexDirection: "column",
   },
   contactSheetGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(min(150px, calc(50vw - 30px)), 1fr))", // 移动端2列
     gap: "16px",
     overflowY: "auto",
-    height: "100%",
-    alignContent: "center", // 垂直居中grid内容
-    padding: "10px",
+    overflowX: "hidden",
+    flex: 1,
+    padding: "20px",
+    alignContent: "start", // 从顶部开始排列，允许滚动
+    WebkitOverflowScrolling: "touch", // iOS 平滑滚动
   },
   contactSheetItem: {
     position: "relative",
