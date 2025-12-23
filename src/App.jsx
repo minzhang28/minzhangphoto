@@ -9,6 +9,84 @@ const getImageUrl = (path) => {
   return `${API_BASE_URL}${path}`;
 };
 
+// Camera icons for loading animation
+const CameraIcons = {
+  rangefinder: (
+    <svg width="120" height="80" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="2">
+      {/* Body */}
+      <rect x="20" y="30" width="80" height="40" rx="4" />
+      {/* Lens */}
+      <circle cx="60" cy="50" r="15" />
+      <circle cx="60" cy="50" r="10" />
+      {/* Viewfinder */}
+      <rect x="25" y="22" width="15" height="8" rx="2" />
+      {/* Shutter button */}
+      <circle cx="85" cy="25" r="3" />
+      {/* Film advance */}
+      <rect x="75" y="22" width="8" height="6" rx="1" />
+    </svg>
+  ),
+  slr: (
+    <svg width="120" height="90" viewBox="0 0 120 90" fill="none" stroke="currentColor" strokeWidth="2">
+      {/* Pentaprism */}
+      <path d="M 45 20 L 35 35 L 85 35 L 75 20 Z" />
+      {/* Body */}
+      <rect x="25" y="35" width="70" height="45" rx="4" />
+      {/* Lens */}
+      <circle cx="60" cy="57.5" r="18" />
+      <circle cx="60" cy="57.5" r="13" />
+      <circle cx="60" cy="57.5" r="8" />
+      {/* Shutter button */}
+      <circle cx="82" cy="30" r="3" />
+    </svg>
+  ),
+  tlr: (
+    <svg width="120" height="100" viewBox="0 0 120 100" fill="none" stroke="currentColor" strokeWidth="2">
+      {/* Body */}
+      <rect x="35" y="15" width="50" height="70" rx="4" />
+      {/* Top lens (viewfinder) */}
+      <circle cx="60" cy="35" r="12" />
+      <circle cx="60" cy="35" r="8" />
+      {/* Bottom lens (taking) */}
+      <circle cx="60" cy="60" r="12" />
+      <circle cx="60" cy="60" r="8" />
+      {/* Side crank */}
+      <rect x="85" y="45" width="8" height="4" />
+      <circle cx="96" cy="47" r="4" />
+    </svg>
+  )
+};
+
+// Loading animation component
+function LoadingAnimation() {
+  const [currentIcon, setCurrentIcon] = useState(0);
+  const icons = ['rangefinder', 'slr', 'tlr'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIcon((prev) => (prev + 1) % icons.length);
+    }, 600);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div style={styles.loadingContainer}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIcon}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.4 }}
+          style={styles.loadingIconWrapper}
+        >
+          {CameraIcons[icons[currentIcon]]}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // Full screen project card component
 function ProjectCard({ project, index, onClick }) {
   return (
@@ -133,17 +211,7 @@ export default function App() {
   }, [selectedProject]);
 
   if (isLoading) {
-    return (
-      <div style={styles.loadingContainer}>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <span style={styles.loadingText}>LOADING</span>
-        </motion.div>
-      </div>
-    );
+    return <LoadingAnimation />;
   }
 
   if (projects.length === 0) {
@@ -451,12 +519,14 @@ const styles = {
     backgroundColor: "#F5F1E8",
     color: "#1a1a1a",
     display: "flex",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    gap: "30px",
   },
-  loadingText: {
-    fontSize: "14px",
-    letterSpacing: "4px",
+  loadingIconWrapper: {
+    color: "#1a1a1a",
+    opacity: 0.7,
   },
   scrollContainer: {
     scrollSnapType: "y mandatory",
