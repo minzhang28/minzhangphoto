@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const API_BASE_URL = "https://api.minzhangphoto.com";
@@ -120,12 +120,12 @@ function ProjectCard({ project, index, onClick }) {
             onClick={onClick}
             style={styles.viewButton}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#1a1a1a";
-              e.target.style.color = "#F5F1E8";
+              e.target.style.backgroundColor = "#f5f5f5";
+              e.target.style.color = "#1a1a1a";
             }}
             onMouseLeave={(e) => {
               e.target.style.backgroundColor = "transparent";
-              e.target.style.color = "#1a1a1a";
+              e.target.style.color = "#f5f5f5";
             }}
           >
             VIEW PROJECT
@@ -150,6 +150,8 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [filterType, setFilterType] = useState("all");
+  const [showContactSheet, setShowContactSheet] = useState(false);
+  const imageRefs = useRef([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -200,6 +202,31 @@ export default function App() {
   const openProjectGallery = (project) => {
     setSelectedProject(project);
     setShowNavMenu(false);
+  };
+
+  const scrollToImage = (index) => {
+    setShowContactSheet(false);
+    setTimeout(() => {
+      if (imageRefs.current[index]) {
+        // Add flash effect
+        const element = imageRefs.current[index];
+        element.style.transition = 'all 0.3s ease';
+        element.style.transform = 'scale(1.02)';
+        element.style.boxShadow = '0 0 40px rgba(255, 255, 255, 0.6)';
+
+        // Scroll to image
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+
+        // Remove flash after animation
+        setTimeout(() => {
+          element.style.transform = 'scale(1)';
+          element.style.boxShadow = '';
+        }, 600);
+      }
+    }, 400); // Wait for overlay to dissolve
   };
 
   useEffect(() => {
@@ -294,12 +321,12 @@ export default function App() {
             <button
               style={styles.exploreButton}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "#1a1a1a";
-                e.target.style.color = "#F5F1E8";
+                e.target.style.backgroundColor = "#f5f5f5";
+                e.target.style.color = "#1a1a1a";
               }}
               onMouseLeave={(e) => {
                 e.target.style.backgroundColor = "transparent";
-                e.target.style.color = "#1a1a1a";
+                e.target.style.color = "#f5f5f5";
               }}
             >
               VIEW ALL
@@ -347,7 +374,7 @@ export default function App() {
                   onClick={() => setFilterType("all")}
                   style={{
                     ...styles.navFilterButton,
-                    borderBottom: filterType === "all" ? "2px solid #1a1a1a" : "2px solid transparent"
+                    borderBottom: filterType === "all" ? "2px solid #f5f5f5" : "2px solid transparent"
                   }}
                 >
                   ALL PROJECTS
@@ -356,7 +383,7 @@ export default function App() {
                   onClick={() => setFilterType("location")}
                   style={{
                     ...styles.navFilterButton,
-                    borderBottom: filterType === "location" ? "2px solid #1a1a1a" : "2px solid transparent"
+                    borderBottom: filterType === "location" ? "2px solid #f5f5f5" : "2px solid transparent"
                   }}
                 >
                   BY LOCATION
@@ -377,7 +404,7 @@ export default function App() {
                       onClick={() => openProjectGallery(project)}
                       style={styles.navMenuItem}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "rgba(26,26,26,0.08)";
+                        e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = "transparent";
@@ -400,7 +427,7 @@ export default function App() {
                           onClick={() => openProjectGallery(project)}
                           style={styles.navMenuItem}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "rgba(26,26,26,0.08)";
+                            e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.backgroundColor = "transparent";
@@ -447,10 +474,44 @@ export default function App() {
               ✕
             </button>
 
+            {/* View Toggle Button - The Glass Toggle */}
+            {!showContactSheet && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, duration: 0.3 }}
+                onClick={() => setShowContactSheet(true)}
+                style={styles.viewToggleButton}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "rgba(60, 60, 60, 0.95)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "rgba(42, 42, 42, 0.85)";
+                }}
+              >
+                {/* Grid Icon - Four Small Squares */}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="4" y="4" width="7" height="7" fill="currentColor" opacity="0.9" />
+                  <rect x="13" y="4" width="7" height="7" fill="currentColor" opacity="0.9" />
+                  <rect x="4" y="13" width="7" height="7" fill="currentColor" opacity="0.9" />
+                  <rect x="13" y="13" width="7" height="7" fill="currentColor" opacity="0.9" />
+                </svg>
+              </motion.button>
+            )}
+
             <motion.div
               initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.15, duration: 0.4 }}
+              animate={{
+                y: 0,
+                opacity: 1,
+                scale: showContactSheet ? 0.95 : 1,
+                filter: showContactSheet ? "blur(60px) brightness(0.7)" : "blur(0px) brightness(1)"
+              }}
+              transition={{
+                delay: 0.15,
+                duration: showContactSheet ? 0.6 : 0.4,
+                ease: "easeInOut"
+              }}
               style={styles.galleryContent}
             >
               <div style={styles.galleryHeader}>
@@ -469,6 +530,7 @@ export default function App() {
                   selectedProject.images.map((img, index) => (
                     <motion.div
                       key={index}
+                      ref={(el) => (imageRefs.current[index] = el)}
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-200px" }}
@@ -490,10 +552,10 @@ export default function App() {
                     onClick={() => setSelectedProject(null)}
                     style={styles.galleryCloseButton}
                     onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "#2a2a2a";
+                      e.target.style.backgroundColor = "#3a3a3a";
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "#1a1a1a";
+                      e.target.style.backgroundColor = "#2a2a2a";
                     }}
                   >
                     CLOSE & RETURN
@@ -501,6 +563,66 @@ export default function App() {
                 </div>
               </div>
             </motion.div>
+
+            {/* Contact Sheet Overlay - The Frosted Glass Grid */}
+            <AnimatePresence>
+              {showContactSheet && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  style={styles.contactSheetOverlay}
+                  onClick={() => setShowContactSheet(false)}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 30 }}
+                    transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    style={styles.contactSheetContainer}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* Grid */}
+                    <div style={styles.contactSheetGrid}>
+                      {selectedProject.images.map((img, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 30 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: 0.3 + index * 0.015,
+                            duration: 0.4,
+                            ease: [0.16, 1, 0.3, 1]
+                          }}
+                          onClick={() => scrollToImage(index)}
+                          style={styles.contactSheetItem}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = "scale(1.08)";
+                            e.currentTarget.style.zIndex = "10";
+                            e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.3)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = "scale(1)";
+                            e.currentTarget.style.zIndex = "1";
+                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+                          }}
+                        >
+                          <img
+                            src={getImageUrl(img.url || img)}
+                            alt={`Image ${index + 1}`}
+                            style={styles.contactSheetImage}
+                          />
+                          <div style={styles.contactSheetNumber}>
+                            {String(index + 1).padStart(2, "0")}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
@@ -510,14 +632,14 @@ export default function App() {
 
 const styles = {
   container: {
-    backgroundColor: "#F5F1E8",
-    color: "#1a1a1a",
+    backgroundColor: "#1a1a1a", // 纯中性深灰
+    color: "#f5f5f5", // 纯白色文字
     fontFamily: "'Helvetica Neue', -apple-system, Arial, sans-serif",
   },
   loadingContainer: {
     height: "100vh",
-    backgroundColor: "#F5F1E8",
-    color: "#1a1a1a",
+    backgroundColor: "#1a1a1a",
+    color: "#f5f5f5",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -525,7 +647,7 @@ const styles = {
     gap: "30px",
   },
   loadingIconWrapper: {
-    color: "#1a1a1a",
+    color: "#f5f5f5",
     opacity: 0.7,
   },
   scrollContainer: {
@@ -541,7 +663,8 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     scrollSnapAlign: "start",
-    backgroundColor: "#F5F1E8",
+    backgroundColor: "#1a1a1a",
+    padding: "0 20px", // 移动端padding
   },
   heroContent: {
     position: "relative",
@@ -577,7 +700,7 @@ const styles = {
   statDivider: {
     width: "1px",
     height: "40px",
-    backgroundColor: "rgba(26,26,26,0.2)",
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   scrollHint: {
     position: "absolute",
@@ -633,7 +756,7 @@ const styles = {
   projectOverlay: {
     position: "absolute",
     inset: 0,
-    background: "linear-gradient(to bottom, rgba(245,241,232,0.5) 0%, rgba(245,241,232,0.9) 100%)",
+    background: "linear-gradient(to bottom, rgba(26,26,26,0.7) 0%, rgba(26,26,26,0.95) 100%)",
   },
   projectContent: {
     position: "relative",
@@ -668,14 +791,15 @@ const styles = {
   viewButton: {
     padding: "16px 40px",
     background: "transparent",
-    border: "2px solid #1a1a1a",
+    border: "2px solid #f5f5f5",
     borderRadius: "30px",
-    color: "#1a1a1a",
+    color: "#f5f5f5",
     fontSize: "12px",
     letterSpacing: "0.15em",
     fontWeight: "500",
     cursor: "pointer",
     transition: "all 0.3s ease",
+    minHeight: "48px", // 移动端触摸友好
   },
   transitionSection: {
     height: "100vh",
@@ -693,7 +817,7 @@ const styles = {
   transitionLine: {
     width: "100px",
     height: "1px",
-    backgroundColor: "rgba(26,26,26,0.2)",
+    backgroundColor: "rgba(255,255,255,0.2)",
     margin: "0 auto 30px",
   },
   transitionTitle: {
@@ -711,15 +835,16 @@ const styles = {
   exploreButton: {
     padding: "16px 40px",
     background: "transparent",
-    border: "2px solid #1a1a1a",
+    border: "2px solid #f5f5f5",
     borderRadius: "30px",
-    color: "#1a1a1a",
+    color: "#f5f5f5",
     fontSize: "12px",
     letterSpacing: "0.15em",
     fontWeight: "500",
     cursor: "pointer",
     transition: "all 0.3s ease",
     marginBottom: "30px",
+    minHeight: "48px", // 移动端触摸友好
   },
   navOverlay: {
     position: "fixed",
@@ -737,16 +862,16 @@ const styles = {
     width: "90%",
     maxWidth: "600px",
     maxHeight: "80vh",
-    background: "rgba(245,241,232,0.98)",
+    background: "rgba(26, 26, 26, 0.98)", // 纯中性深灰
     backdropFilter: "blur(20px)",
-    border: "1px solid rgba(26,26,26,0.1)",
+    border: "1px solid rgba(255,255,255,0.1)",
     borderRadius: "12px",
     overflow: "hidden",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
   },
   navMenuHeader: {
     display: "flex",
-    borderBottom: "1px solid rgba(26,26,26,0.1)",
+    borderBottom: "1px solid rgba(255,255,255,0.1)",
     padding: "0 20px",
     position: "relative",
   },
@@ -755,12 +880,13 @@ const styles = {
     padding: "16px 0",
     background: "none",
     border: "none",
-    color: "#1a1a1a",
+    color: "#f5f5f5",
     fontSize: "11px",
     letterSpacing: "0.1em",
     cursor: "pointer",
     transition: "opacity 0.3s ease",
-    opacity: 0.5,
+    opacity: 0.6,
+    minHeight: "48px", // 移动端触摸友好
   },
   navCloseButton: {
     position: "absolute",
@@ -769,12 +895,14 @@ const styles = {
     transform: "translateY(-50%)",
     background: "none",
     border: "none",
-    color: "#1a1a1a",
+    color: "#f5f5f5",
     fontSize: "20px",
     cursor: "pointer",
-    padding: "8px",
-    opacity: 0.5,
+    padding: "12px",
+    opacity: 0.7,
     transition: "opacity 0.3s ease",
+    minWidth: "44px",
+    minHeight: "44px",
   },
   navMenuContent: {
     maxHeight: "calc(80vh - 50px)",
@@ -816,9 +944,9 @@ const styles = {
     fontWeight: "600",
   },
   footer: {
-    borderTop: "1px solid rgba(26,26,26,0.08)",
-    padding: "40px",
-    backgroundColor: "#F5F1E8",
+    borderTop: "1px solid rgba(255,255,255,0.08)",
+    padding: "40px 20px", // 移动端responsive padding
+    backgroundColor: "#1a1a1a",
   },
   footerContent: {
     maxWidth: "1400px",
@@ -844,7 +972,7 @@ const styles = {
   footerLink: {
     fontSize: "11px",
     letterSpacing: "0.1em",
-    color: "rgba(26,26,26,0.6)",
+    color: "rgba(255,255,255,0.6)",
     textDecoration: "none",
     transition: "color 0.3s ease",
   },
@@ -880,18 +1008,18 @@ const styles = {
     left: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(245,241,232,0.85)",
+    backgroundColor: "rgba(0,0,0,0.85)",
   },
   closeButton: {
     position: "fixed",
     top: "40px",
     right: "40px",
-    background: "rgba(245,241,232,0.9)",
+    background: "rgba(42, 42, 42, 0.9)",
     backdropFilter: "blur(10px)",
-    border: "1px solid rgba(26,26,26,0.2)",
-    color: "#1a1a1a",
-    width: "44px",
-    height: "44px",
+    border: "1px solid rgba(255,255,255,0.2)",
+    color: "#f5f5f5",
+    width: "48px", // 移动端更大的触摸区域
+    height: "48px",
     borderRadius: "50%",
     cursor: "pointer",
     zIndex: 101,
@@ -963,7 +1091,7 @@ const styles = {
   galleryFooterLine: {
     width: "60px",
     height: "1px",
-    backgroundColor: "rgba(26,26,26,0.2)",
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   galleryFooterText: {
     fontSize: "12px",
@@ -973,14 +1101,103 @@ const styles = {
   galleryCloseButton: {
     marginTop: "30px",
     padding: "16px 40px",
-    background: "#1a1a1a",
+    background: "#2a2a2a",
     border: "none",
     borderRadius: "30px",
-    color: "#F5F1E8",
+    color: "#f5f5f5",
     fontSize: "12px",
     letterSpacing: "0.15em",
     fontWeight: "500",
     cursor: "pointer",
     transition: "all 0.3s ease",
+    minHeight: "48px",
   },
+  // View Toggle Button (Floating) - The Glass Toggle
+  viewToggleButton: {
+    position: "fixed",
+    bottom: "40px",
+    right: "40px",
+    background: "rgba(42, 42, 42, 0.85)", // 纯中性深灰磨砂
+    backdropFilter: "blur(16px) saturate(180%)",
+    border: "1px solid rgba(255, 255, 255, 0.15)",
+    color: "#f5f5f5",
+    width: "60px",
+    height: "60px",
+    borderRadius: "50%",
+    cursor: "pointer",
+    zIndex: 102,
+    fontSize: "24px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)",
+  },
+  // Contact Sheet Overlay - The Frosted Glass
+  contactSheetOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100vh",
+    backgroundColor: "rgba(0, 0, 0, 0.85)", // 纯黑透明
+    backdropFilter: "blur(24px) saturate(120%)",
+    zIndex: 103,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "40px",
+  },
+  contactSheetContainer: {
+    width: "100%",
+    maxWidth: "min(1400px, 90vw)",
+    maxHeight: "min(85vh, calc(100vh - 60px))",
+    background: "rgba(26, 26, 26, 0.97)", // 纯中性深灰磨砂玻璃
+    backdropFilter: "blur(50px) saturate(150%)",
+    borderRadius: "16px",
+    overflow: "hidden",
+    boxShadow: "0 40px 120px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)",
+    display: "flex",
+    flexDirection: "column",
+  },
+  contactSheetGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(min(150px, calc(50vw - 30px)), 1fr))", // 移动端2列
+    gap: "16px",
+    overflowY: "auto",
+    overflowX: "hidden",
+    flex: 1,
+    padding: "20px",
+    alignContent: "start", // 从顶部开始排列，允许滚动
+    WebkitOverflowScrolling: "touch", // iOS 平滑滚动
+  },
+  contactSheetItem: {
+    position: "relative",
+    aspectRatio: "3 / 2",
+    borderRadius: "8px",
+    overflow: "hidden",
+    cursor: "pointer",
+    transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05)",
+    backgroundColor: "rgba(42, 42, 42, 0.3)",
+  },
+  contactSheetImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    display: "block",
+  },
+  contactSheetNumber: {
+    position: "absolute",
+    top: "8px",
+    left: "8px",
+    fontSize: "10px",
+    fontFamily: "monospace",
+    color: "#f5f5f5",
+    backgroundColor: "rgba(0,0,0,0.8)",
+    padding: "4px 8px",
+    borderRadius: "4px",
+    backdropFilter: "blur(4px)",
+  },
+  // 移动端媒体查询会通过内联样式动态应用
 };
