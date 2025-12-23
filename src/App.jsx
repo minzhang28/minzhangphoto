@@ -583,19 +583,6 @@ export default function App() {
                     style={styles.contactSheetContainer}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {/* Header */}
-                    <div style={styles.contactSheetHeader}>
-                      <span style={styles.contactSheetTitle}>
-                        CONTACT SHEET — {selectedProject.images.length} IMAGES
-                      </span>
-                      <button
-                        onClick={() => setShowContactSheet(false)}
-                        style={styles.contactSheetClose}
-                      >
-                        ✕
-                      </button>
-                    </div>
-
                     {/* Grid */}
                     <div style={styles.contactSheetGrid}>
                       {selectedProject.images.map((img, index) => (
@@ -1172,40 +1159,15 @@ const styles = {
     boxShadow: "0 40px 120px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)",
     display: "flex",
     flexDirection: "column",
-  },
-  contactSheetHeader: {
-    padding: "20px 24px", // 移动端responsive padding
-    borderBottom: "1px solid rgba(255,255,255,0.1)",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-  },
-  contactSheetTitle: {
-    fontSize: "10px", // 移动端稍小
-    letterSpacing: "0.15em",
-    fontWeight: "600",
-    color: "#f5f5f5",
-  },
-  contactSheetClose: {
-    background: "none",
-    border: "none",
-    color: "#f5f5f5",
-    fontSize: "24px",
-    cursor: "pointer",
-    padding: "12px", // 移动端更大触摸区域
-    opacity: 0.7,
-    transition: "opacity 0.3s ease",
-    minWidth: "44px",
-    minHeight: "44px",
+    justifyContent: "center", // 垂直居中
+    padding: "40px", // 移动端padding
   },
   contactSheetGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(min(140px, 100%), 1fr))", // 移动端自适应
     gap: "12px",
-    padding: "16px",
     overflowY: "auto",
-    flex: 1,
+    maxHeight: "100%",
   },
   contactSheetItem: {
     position: "relative",
