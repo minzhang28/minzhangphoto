@@ -208,10 +208,23 @@ export default function App() {
     setShowContactSheet(false);
     setTimeout(() => {
       if (imageRefs.current[index]) {
-        imageRefs.current[index].scrollIntoView({
+        // Add flash effect
+        const element = imageRefs.current[index];
+        element.style.transition = 'all 0.3s ease';
+        element.style.transform = 'scale(1.02)';
+        element.style.boxShadow = '0 0 40px rgba(245, 241, 232, 0.6)';
+
+        // Scroll to image
+        element.scrollIntoView({
           behavior: 'smooth',
           block: 'center'
         });
+
+        // Remove flash after animation
+        setTimeout(() => {
+          element.style.transform = 'scale(1)';
+          element.style.boxShadow = '';
+        }, 600);
       }
     }, 400); // Wait for overlay to dissolve
   };
@@ -461,7 +474,7 @@ export default function App() {
               ✕
             </button>
 
-            {/* View Toggle Button */}
+            {/* View Toggle Button - The Glass Toggle */}
             {!showContactSheet && (
               <motion.button
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -470,13 +483,19 @@ export default function App() {
                 onClick={() => setShowContactSheet(true)}
                 style={styles.viewToggleButton}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "#2a2a2a";
+                  e.target.style.backgroundColor = "rgba(30, 41, 59, 0.95)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "#1a1a1a";
+                  e.target.style.backgroundColor = "rgba(30, 41, 59, 0.85)";
                 }}
               >
-                <span style={styles.viewToggleIcon}>⊞</span>
+                {/* Grid Icon - Four Small Squares */}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="4" y="4" width="7" height="7" fill="currentColor" opacity="0.9" />
+                  <rect x="13" y="4" width="7" height="7" fill="currentColor" opacity="0.9" />
+                  <rect x="4" y="13" width="7" height="7" fill="currentColor" opacity="0.9" />
+                  <rect x="13" y="13" width="7" height="7" fill="currentColor" opacity="0.9" />
+                </svg>
               </motion.button>
             )}
 
@@ -485,10 +504,14 @@ export default function App() {
               animate={{
                 y: 0,
                 opacity: 1,
-                scale: showContactSheet ? 0.98 : 1,
-                filter: showContactSheet ? "blur(40px)" : "blur(0px)"
+                scale: showContactSheet ? 0.95 : 1,
+                filter: showContactSheet ? "blur(60px) brightness(0.7)" : "blur(0px) brightness(1)"
               }}
-              transition={{ delay: 0.15, duration: 0.4 }}
+              transition={{
+                delay: 0.15,
+                duration: showContactSheet ? 0.6 : 0.4,
+                ease: "easeInOut"
+              }}
               style={styles.galleryContent}
             >
               <div style={styles.galleryHeader}>
@@ -548,15 +571,15 @@ export default function App() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
                   style={styles.contactSheetOverlay}
                   onClick={() => setShowContactSheet(false)}
                 >
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.3, delay: 0.1 }}
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 30 }}
+                    transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     style={styles.contactSheetContainer}
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -578,18 +601,24 @@ export default function App() {
                       {selectedProject.images.map((img, index) => (
                         <motion.div
                           key={index}
-                          initial={{ opacity: 0, y: 20 }}
+                          initial={{ opacity: 0, y: 30 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.02, duration: 0.3 }}
+                          transition={{
+                            delay: 0.3 + index * 0.015,
+                            duration: 0.4,
+                            ease: [0.16, 1, 0.3, 1]
+                          }}
                           onClick={() => scrollToImage(index)}
                           style={styles.contactSheetItem}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = "scale(1.05)";
+                            e.currentTarget.style.transform = "scale(1.08)";
                             e.currentTarget.style.zIndex = "10";
+                            e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.3)";
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.transform = "scale(1)";
                             e.currentTarget.style.zIndex = "1";
+                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
                           }}
                         >
                           <img
@@ -1089,17 +1118,17 @@ const styles = {
     cursor: "pointer",
     transition: "all 0.3s ease",
   },
-  // View Toggle Button (Floating)
+  // View Toggle Button (Floating) - The Glass Toggle
   viewToggleButton: {
     position: "fixed",
     bottom: "40px",
     right: "40px",
-    background: "#1a1a1a",
-    backdropFilter: "blur(10px)",
-    border: "1px solid rgba(245,241,232,0.2)",
+    background: "rgba(30, 41, 59, 0.85)", // Slate-800 深色磨砂
+    backdropFilter: "blur(16px) saturate(180%)",
+    border: "1px solid rgba(148, 163, 184, 0.15)", // Slate-400 边框
     color: "#F5F1E8",
-    width: "56px",
-    height: "56px",
+    width: "60px",
+    height: "60px",
     borderRadius: "50%",
     cursor: "pointer",
     zIndex: 102,
@@ -1107,11 +1136,8 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    transition: "all 0.3s ease",
-    boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
-  },
-  viewToggleIcon: {
-    lineHeight: "1",
+    transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 10px 40px rgba(15, 23, 42, 0.5), 0 0 0 1px rgba(148, 163, 184, 0.05)",
   },
   // Contact Sheet Overlay - The Frosted Glass
   contactSheetOverlay: {
@@ -1120,8 +1146,8 @@ const styles = {
     left: 0,
     width: "100%",
     height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.75)", // Dark smoked glass
-    backdropFilter: "blur(20px)",
+    backgroundColor: "rgba(15, 23, 42, 0.85)", // Slate-900 深色不刺眼
+    backdropFilter: "blur(24px) saturate(120%)",
     zIndex: 103,
     display: "flex",
     alignItems: "center",
@@ -1132,11 +1158,11 @@ const styles = {
     width: "100%",
     maxWidth: "1400px",
     maxHeight: "90vh",
-    background: "rgba(245, 241, 232, 0.95)", // Semi-transparent
-    backdropFilter: "blur(40px)",
-    borderRadius: "12px",
+    background: "rgba(245, 241, 232, 0.97)", // 更高透明度的磨砂玻璃
+    backdropFilter: "blur(50px) saturate(150%)",
+    borderRadius: "16px",
     overflow: "hidden",
-    boxShadow: "0 30px 100px rgba(0,0,0,0.5)",
+    boxShadow: "0 40px 120px rgba(15, 23, 42, 0.6), 0 0 0 1px rgba(148, 163, 184, 0.1)",
     display: "flex",
     flexDirection: "column",
   },
@@ -1175,12 +1201,12 @@ const styles = {
   contactSheetItem: {
     position: "relative",
     aspectRatio: "3 / 2",
-    borderRadius: "6px",
+    borderRadius: "8px",
     overflow: "hidden",
     cursor: "pointer",
-    transition: "all 0.3s ease",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-    backgroundColor: "#1a1a1a",
+    transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05)",
+    backgroundColor: "rgba(30, 41, 59, 0.3)",
   },
   contactSheetImage: {
     width: "100%",
