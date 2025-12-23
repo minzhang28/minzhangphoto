@@ -83,13 +83,6 @@ function LoadingAnimation() {
           {CameraIcons[icons[currentIcon]]}
         </motion.div>
       </AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-      >
-        <span style={styles.loadingText}>LOADING</span>
-      </motion.div>
     </div>
   );
 }
@@ -534,11 +527,6 @@ const styles = {
   loadingIconWrapper: {
     color: "#1a1a1a",
     opacity: 0.7,
-  },
-  loadingText: {
-    fontSize: "14px",
-    letterSpacing: "4px",
-    marginTop: "10px",
   },
   scrollContainer: {
     scrollSnapType: "y mandatory",
