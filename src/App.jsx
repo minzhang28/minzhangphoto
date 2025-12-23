@@ -120,12 +120,12 @@ function ProjectCard({ project, index, onClick }) {
             onClick={onClick}
             style={styles.viewButton}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#1a1a1a";
-              e.target.style.color = "#F5F1E8";
+              e.target.style.backgroundColor = "#f1f5f9";
+              e.target.style.color = "#0f172a";
             }}
             onMouseLeave={(e) => {
               e.target.style.backgroundColor = "transparent";
-              e.target.style.color = "#1a1a1a";
+              e.target.style.color = "#f1f5f9";
             }}
           >
             VIEW PROJECT
@@ -321,12 +321,12 @@ export default function App() {
             <button
               style={styles.exploreButton}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "#1a1a1a";
-                e.target.style.color = "#F5F1E8";
+                e.target.style.backgroundColor = "#f1f5f9";
+                e.target.style.color = "#0f172a";
               }}
               onMouseLeave={(e) => {
                 e.target.style.backgroundColor = "transparent";
-                e.target.style.color = "#1a1a1a";
+                e.target.style.color = "#f1f5f9";
               }}
             >
               VIEW ALL
@@ -374,7 +374,7 @@ export default function App() {
                   onClick={() => setFilterType("all")}
                   style={{
                     ...styles.navFilterButton,
-                    borderBottom: filterType === "all" ? "2px solid #1a1a1a" : "2px solid transparent"
+                    borderBottom: filterType === "all" ? "2px solid #f1f5f9" : "2px solid transparent"
                   }}
                 >
                   ALL PROJECTS
@@ -383,7 +383,7 @@ export default function App() {
                   onClick={() => setFilterType("location")}
                   style={{
                     ...styles.navFilterButton,
-                    borderBottom: filterType === "location" ? "2px solid #1a1a1a" : "2px solid transparent"
+                    borderBottom: filterType === "location" ? "2px solid #f1f5f9" : "2px solid transparent"
                   }}
                 >
                   BY LOCATION
@@ -404,7 +404,7 @@ export default function App() {
                       onClick={() => openProjectGallery(project)}
                       style={styles.navMenuItem}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "rgba(26,26,26,0.08)";
+                        e.currentTarget.style.backgroundColor = "rgba(241,245,249,0.08)";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = "transparent";
@@ -427,7 +427,7 @@ export default function App() {
                           onClick={() => openProjectGallery(project)}
                           style={styles.navMenuItem}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "rgba(26,26,26,0.08)";
+                            e.currentTarget.style.backgroundColor = "rgba(241,245,249,0.08)";
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.backgroundColor = "transparent";
@@ -552,10 +552,10 @@ export default function App() {
                     onClick={() => setSelectedProject(null)}
                     style={styles.galleryCloseButton}
                     onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "#2a2a2a";
+                      e.target.style.backgroundColor = "#334155";
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "#1a1a1a";
+                      e.target.style.backgroundColor = "#1e293b";
                     }}
                   >
                     CLOSE & RETURN
@@ -645,14 +645,14 @@ export default function App() {
 
 const styles = {
   container: {
-    backgroundColor: "#F5F1E8",
-    color: "#1a1a1a",
+    backgroundColor: "#0f172a", // Slate-900 深色主题
+    color: "#f1f5f9", // Slate-100 浅色文字
     fontFamily: "'Helvetica Neue', -apple-system, Arial, sans-serif",
   },
   loadingContainer: {
     height: "100vh",
-    backgroundColor: "#F5F1E8",
-    color: "#1a1a1a",
+    backgroundColor: "#0f172a",
+    color: "#f1f5f9",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -660,7 +660,7 @@ const styles = {
     gap: "30px",
   },
   loadingIconWrapper: {
-    color: "#1a1a1a",
+    color: "#f1f5f9",
     opacity: 0.7,
   },
   scrollContainer: {
@@ -676,7 +676,8 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     scrollSnapAlign: "start",
-    backgroundColor: "#F5F1E8",
+    backgroundColor: "#0f172a",
+    padding: "0 20px", // 移动端padding
   },
   heroContent: {
     position: "relative",
@@ -712,7 +713,7 @@ const styles = {
   statDivider: {
     width: "1px",
     height: "40px",
-    backgroundColor: "rgba(26,26,26,0.2)",
+    backgroundColor: "rgba(241,245,249,0.2)",
   },
   scrollHint: {
     position: "absolute",
@@ -768,7 +769,7 @@ const styles = {
   projectOverlay: {
     position: "absolute",
     inset: 0,
-    background: "linear-gradient(to bottom, rgba(245,241,232,0.5) 0%, rgba(245,241,232,0.9) 100%)",
+    background: "linear-gradient(to bottom, rgba(15,23,42,0.7) 0%, rgba(15,23,42,0.95) 100%)",
   },
   projectContent: {
     position: "relative",
@@ -803,14 +804,15 @@ const styles = {
   viewButton: {
     padding: "16px 40px",
     background: "transparent",
-    border: "2px solid #1a1a1a",
+    border: "2px solid #f1f5f9",
     borderRadius: "30px",
-    color: "#1a1a1a",
+    color: "#f1f5f9",
     fontSize: "12px",
     letterSpacing: "0.15em",
     fontWeight: "500",
     cursor: "pointer",
     transition: "all 0.3s ease",
+    minHeight: "48px", // 移动端触摸友好
   },
   transitionSection: {
     height: "100vh",
@@ -828,7 +830,7 @@ const styles = {
   transitionLine: {
     width: "100px",
     height: "1px",
-    backgroundColor: "rgba(26,26,26,0.2)",
+    backgroundColor: "rgba(241,245,249,0.2)",
     margin: "0 auto 30px",
   },
   transitionTitle: {
@@ -846,15 +848,16 @@ const styles = {
   exploreButton: {
     padding: "16px 40px",
     background: "transparent",
-    border: "2px solid #1a1a1a",
+    border: "2px solid #f1f5f9",
     borderRadius: "30px",
-    color: "#1a1a1a",
+    color: "#f1f5f9",
     fontSize: "12px",
     letterSpacing: "0.15em",
     fontWeight: "500",
     cursor: "pointer",
     transition: "all 0.3s ease",
     marginBottom: "30px",
+    minHeight: "48px", // 移动端触摸友好
   },
   navOverlay: {
     position: "fixed",
@@ -872,16 +875,16 @@ const styles = {
     width: "90%",
     maxWidth: "600px",
     maxHeight: "80vh",
-    background: "rgba(245,241,232,0.98)",
+    background: "rgba(30, 41, 59, 0.98)", // 深色主题
     backdropFilter: "blur(20px)",
-    border: "1px solid rgba(26,26,26,0.1)",
+    border: "1px solid rgba(241,245,249,0.1)",
     borderRadius: "12px",
     overflow: "hidden",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
   },
   navMenuHeader: {
     display: "flex",
-    borderBottom: "1px solid rgba(26,26,26,0.1)",
+    borderBottom: "1px solid rgba(241,245,249,0.1)",
     padding: "0 20px",
     position: "relative",
   },
@@ -890,12 +893,13 @@ const styles = {
     padding: "16px 0",
     background: "none",
     border: "none",
-    color: "#1a1a1a",
+    color: "#f1f5f9",
     fontSize: "11px",
     letterSpacing: "0.1em",
     cursor: "pointer",
     transition: "opacity 0.3s ease",
-    opacity: 0.5,
+    opacity: 0.6,
+    minHeight: "48px", // 移动端触摸友好
   },
   navCloseButton: {
     position: "absolute",
@@ -904,12 +908,14 @@ const styles = {
     transform: "translateY(-50%)",
     background: "none",
     border: "none",
-    color: "#1a1a1a",
+    color: "#f1f5f9",
     fontSize: "20px",
     cursor: "pointer",
-    padding: "8px",
-    opacity: 0.5,
+    padding: "12px",
+    opacity: 0.7,
     transition: "opacity 0.3s ease",
+    minWidth: "44px",
+    minHeight: "44px",
   },
   navMenuContent: {
     maxHeight: "calc(80vh - 50px)",
@@ -951,9 +957,9 @@ const styles = {
     fontWeight: "600",
   },
   footer: {
-    borderTop: "1px solid rgba(26,26,26,0.08)",
-    padding: "40px",
-    backgroundColor: "#F5F1E8",
+    borderTop: "1px solid rgba(241,245,249,0.08)",
+    padding: "40px 20px", // 移动端responsive padding
+    backgroundColor: "#0f172a",
   },
   footerContent: {
     maxWidth: "1400px",
@@ -979,7 +985,7 @@ const styles = {
   footerLink: {
     fontSize: "11px",
     letterSpacing: "0.1em",
-    color: "rgba(26,26,26,0.6)",
+    color: "rgba(241,245,249,0.6)",
     textDecoration: "none",
     transition: "color 0.3s ease",
   },
@@ -1015,18 +1021,18 @@ const styles = {
     left: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(245,241,232,0.85)",
+    backgroundColor: "rgba(15,23,42,0.85)",
   },
   closeButton: {
     position: "fixed",
     top: "40px",
     right: "40px",
-    background: "rgba(245,241,232,0.9)",
+    background: "rgba(30, 41, 59, 0.9)",
     backdropFilter: "blur(10px)",
-    border: "1px solid rgba(26,26,26,0.2)",
-    color: "#1a1a1a",
-    width: "44px",
-    height: "44px",
+    border: "1px solid rgba(241,245,249,0.2)",
+    color: "#f1f5f9",
+    width: "48px", // 移动端更大的触摸区域
+    height: "48px",
     borderRadius: "50%",
     cursor: "pointer",
     zIndex: 101,
@@ -1098,7 +1104,7 @@ const styles = {
   galleryFooterLine: {
     width: "60px",
     height: "1px",
-    backgroundColor: "rgba(26,26,26,0.2)",
+    backgroundColor: "rgba(241,245,249,0.2)",
   },
   galleryFooterText: {
     fontSize: "12px",
@@ -1108,15 +1114,16 @@ const styles = {
   galleryCloseButton: {
     marginTop: "30px",
     padding: "16px 40px",
-    background: "#1a1a1a",
+    background: "#1e293b",
     border: "none",
     borderRadius: "30px",
-    color: "#F5F1E8",
+    color: "#f1f5f9",
     fontSize: "12px",
     letterSpacing: "0.15em",
     fontWeight: "500",
     cursor: "pointer",
     transition: "all 0.3s ease",
+    minHeight: "48px",
   },
   // View Toggle Button (Floating) - The Glass Toggle
   viewToggleButton: {
@@ -1158,43 +1165,45 @@ const styles = {
     width: "100%",
     maxWidth: "1400px",
     maxHeight: "90vh",
-    background: "rgba(245, 241, 232, 0.97)", // 更高透明度的磨砂玻璃
+    background: "rgba(30, 41, 59, 0.97)", // 深色磨砂玻璃
     backdropFilter: "blur(50px) saturate(150%)",
     borderRadius: "16px",
     overflow: "hidden",
-    boxShadow: "0 40px 120px rgba(15, 23, 42, 0.6), 0 0 0 1px rgba(148, 163, 184, 0.1)",
+    boxShadow: "0 40px 120px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(148, 163, 184, 0.1)",
     display: "flex",
     flexDirection: "column",
   },
   contactSheetHeader: {
-    padding: "24px 32px",
-    borderBottom: "1px solid rgba(26,26,26,0.1)",
+    padding: "20px 24px", // 移动端responsive padding
+    borderBottom: "1px solid rgba(241,245,249,0.1)",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "rgba(245, 241, 232, 0.8)",
+    backgroundColor: "rgba(15, 23, 42, 0.8)",
   },
   contactSheetTitle: {
-    fontSize: "11px",
+    fontSize: "10px", // 移动端稍小
     letterSpacing: "0.15em",
     fontWeight: "600",
-    color: "#1a1a1a",
+    color: "#f1f5f9",
   },
   contactSheetClose: {
     background: "none",
     border: "none",
-    color: "#1a1a1a",
+    color: "#f1f5f9",
     fontSize: "24px",
     cursor: "pointer",
-    padding: "8px",
-    opacity: 0.5,
+    padding: "12px", // 移动端更大触摸区域
+    opacity: 0.7,
     transition: "opacity 0.3s ease",
+    minWidth: "44px",
+    minHeight: "44px",
   },
   contactSheetGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-    gap: "16px",
-    padding: "24px",
+    gridTemplateColumns: "repeat(auto-fill, minmax(min(140px, 100%), 1fr))", // 移动端自适应
+    gap: "12px",
+    padding: "16px",
     overflowY: "auto",
     flex: 1,
   },
@@ -1220,10 +1229,11 @@ const styles = {
     left: "8px",
     fontSize: "10px",
     fontFamily: "monospace",
-    color: "#F5F1E8",
-    backgroundColor: "rgba(26,26,26,0.7)",
+    color: "#f1f5f9",
+    backgroundColor: "rgba(15,23,42,0.8)",
     padding: "4px 8px",
     borderRadius: "4px",
     backdropFilter: "blur(4px)",
   },
+  // 移动端媒体查询会通过内联样式动态应用
 };
