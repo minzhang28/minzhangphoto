@@ -636,6 +636,8 @@ const styles = {
   loadingIconWrapper: {
     color: "#f5f5f5",
     opacity: 1,
+    width: "80px",
+    height: "80px",
   },
   scrollContainer: {
     scrollSnapType: "y mandatory",
