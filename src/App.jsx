@@ -1140,34 +1140,36 @@ const styles = {
     left: 0,
     width: "100%",
     height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.85)", // 纯黑透明
-    backdropFilter: "blur(24px) saturate(120%)",
+    backgroundColor: "rgba(0, 0, 0, 0.75)", // 更透明，显示磨砂效果
+    backdropFilter: "blur(40px) saturate(100%)", // 更强的磨砂玻璃效果
+    WebkitBackdropFilter: "blur(40px) saturate(100%)", // Safari 支持
     zIndex: 103,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "40px",
+    padding: "20px",
   },
   contactSheetContainer: {
     width: "100%",
-    maxWidth: "min(1400px, 90vw)",
-    maxHeight: "min(85vh, calc(100vh - 60px))",
-    background: "rgba(26, 26, 26, 0.97)", // 纯中性深灰磨砂玻璃
-    backdropFilter: "blur(50px) saturate(150%)",
-    borderRadius: "16px",
+    maxWidth: "min(1600px, 95vw)", // iPad 更大
+    maxHeight: "min(90vh, calc(100vh - 40px))", // iPad 更高
+    background: "rgba(26, 26, 26, 0.95)", // 更强的磨砂背景
+    backdropFilter: "blur(60px) saturate(130%)", // 极强磨砂玻璃
+    WebkitBackdropFilter: "blur(60px) saturate(130%)", // Safari 支持
+    borderRadius: "20px",
     overflow: "hidden",
-    boxShadow: "0 40px 120px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)",
+    boxShadow: "0 40px 120px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.15)",
     display: "flex",
     flexDirection: "column",
   },
   contactSheetGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(min(150px, calc(50vw - 30px)), 1fr))", // 移动端2列
-    gap: "16px",
+    gridTemplateColumns: "repeat(auto-fill, minmax(clamp(140px, 18vw, 220px), 1fr))", // 响应式：手机2列，iPad 4-5列，桌面6+列
+    gap: "clamp(12px, 1.5vw, 20px)", // 响应式间距
     overflowY: "auto",
     overflowX: "hidden",
     flex: 1,
-    padding: "20px",
+    padding: "clamp(16px, 2.5vw, 32px)", // 响应式内边距
     alignContent: "start", // 从顶部开始排列，允许滚动
     WebkitOverflowScrolling: "touch", // iOS 平滑滚动
   },
