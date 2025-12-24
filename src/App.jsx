@@ -634,8 +634,8 @@ const styles = {
     gap: "30px",
   },
   loadingIconWrapper: {
-    color: "#f5f5f5",
-    opacity: 0.7,
+    color: "#ffffff",
+    opacity: 1,
   },
   scrollContainer: {
     scrollSnapType: "y mandatory",
