@@ -12,47 +12,58 @@ const getImageUrl = (path) => {
 // Camera icons for loading animation
 const CameraIcons = {
   rangefinder: (
-    <svg width="120" height="80" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="2">
-      {/* Body */}
-      <rect x="20" y="30" width="80" height="40" rx="4" />
+    <svg width="100" height="70" viewBox="0 0 100 70" fill="none" stroke="currentColor" strokeWidth="1.8">
+      {/* Main body */}
+      <rect x="15" y="25" width="70" height="35" rx="3" />
+      {/* Viewfinder window */}
+      <rect x="20" y="18" width="12" height="7" rx="1.5" />
+      {/* Rangefinder window */}
+      <rect x="35" y="18" width="8" height="7" rx="1.5" />
       {/* Lens */}
-      <circle cx="60" cy="50" r="15" />
-      <circle cx="60" cy="50" r="10" />
-      {/* Viewfinder */}
-      <rect x="25" y="22" width="15" height="8" rx="2" />
+      <circle cx="55" cy="42.5" r="13" />
+      <circle cx="55" cy="42.5" r="9" />
+      <circle cx="55" cy="42.5" r="5" />
       {/* Shutter button */}
-      <circle cx="85" cy="25" r="3" />
-      {/* Film advance */}
-      <rect x="75" y="22" width="8" height="6" rx="1" />
+      <circle cx="75" cy="20" r="2.5" />
+      {/* Film advance lever */}
+      <path d="M 80 18 L 80 22" strokeLinecap="round" />
     </svg>
   ),
   slr: (
-    <svg width="120" height="90" viewBox="0 0 120 90" fill="none" stroke="currentColor" strokeWidth="2">
-      {/* Pentaprism */}
-      <path d="M 45 20 L 35 35 L 85 35 L 75 20 Z" />
-      {/* Body */}
-      <rect x="25" y="35" width="70" height="45" rx="4" />
+    <svg width="100" height="75" viewBox="0 0 100 75" fill="none" stroke="currentColor" strokeWidth="1.8">
+      {/* Pentaprism housing */}
+      <path d="M 35 22 L 30 30 L 70 30 L 65 22 Z" />
+      <rect x="30" y="20" width="40" height="4" />
+      {/* Main body */}
+      <rect x="20" y="30" width="60" height="35" rx="3" />
       {/* Lens */}
-      <circle cx="60" cy="57.5" r="18" />
-      <circle cx="60" cy="57.5" r="13" />
-      <circle cx="60" cy="57.5" r="8" />
+      <circle cx="50" cy="47.5" r="15" />
+      <circle cx="50" cy="47.5" r="11" />
+      <circle cx="50" cy="47.5" r="7" />
+      <circle cx="50" cy="47.5" r="3" />
       {/* Shutter button */}
-      <circle cx="82" cy="30" r="3" />
+      <circle cx="68" cy="26" r="2.5" />
+      {/* Mode dial */}
+      <circle cx="25" cy="26" r="3" />
     </svg>
   ),
   tlr: (
-    <svg width="120" height="100" viewBox="0 0 120 100" fill="none" stroke="currentColor" strokeWidth="2">
-      {/* Body */}
-      <rect x="35" y="15" width="50" height="70" rx="4" />
-      {/* Top lens (viewfinder) */}
-      <circle cx="60" cy="35" r="12" />
-      <circle cx="60" cy="35" r="8" />
-      {/* Bottom lens (taking) */}
-      <circle cx="60" cy="60" r="12" />
-      <circle cx="60" cy="60" r="8" />
-      {/* Side crank */}
-      <rect x="85" y="45" width="8" height="4" />
-      <circle cx="96" cy="47" r="4" />
+    <svg width="85" height="95" viewBox="0 0 85 95" fill="none" stroke="currentColor" strokeWidth="1.8">
+      {/* Main body - square format */}
+      <rect x="22" y="15" width="41" height="65" rx="3" />
+      {/* Viewing lens (top) */}
+      <circle cx="42.5" cy="32" r="10" />
+      <circle cx="42.5" cy="32" r="7" />
+      <circle cx="42.5" cy="32" r="4" />
+      {/* Taking lens (bottom) */}
+      <circle cx="42.5" cy="55" r="10" />
+      <circle cx="42.5" cy="55" r="7" />
+      <circle cx="42.5" cy="55" r="4" />
+      {/* Film advance crank */}
+      <circle cx="67" cy="50" r="4" />
+      <line x1="63" y1="50" x2="67" y2="50" />
+      {/* Viewing hood outline */}
+      <path d="M 22 15 L 18 8 L 67 8 L 63 15" />
     </svg>
   )
 };
