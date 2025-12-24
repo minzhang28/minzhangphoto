@@ -1139,9 +1139,7 @@ const styles = {
     left: 0,
     width: "100%",
     height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.25)", // 更透明，显示背景图片
-    backdropFilter: "blur(40px) brightness(0.8) saturate(120%)", // 模糊背景图片
-    WebkitBackdropFilter: "blur(40px) brightness(0.8) saturate(120%)", // Safari 支持
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // 半透明黑色，不模糊
     zIndex: 103,
     display: "flex",
     alignItems: "center",
@@ -1152,12 +1150,12 @@ const styles = {
     width: "100%",
     maxWidth: "min(1600px, 95vw)", // iPad 更大
     maxHeight: "min(90vh, calc(100vh - 40px))", // iPad 更高
-    background: "rgba(30, 30, 30, 0.35)", // 真正的半透明，显示背后模糊图片
-    backdropFilter: "blur(60px) saturate(140%)", // 磨砂玻璃模糊背景
-    WebkitBackdropFilter: "blur(60px) saturate(140%)", // Safari 支持
+    background: "rgba(30, 30, 30, 0.4)", // 半透明深灰
+    backdropFilter: "blur(80px) saturate(150%)", // 磨砂玻璃效果只在弹窗
+    WebkitBackdropFilter: "blur(80px) saturate(150%)", // Safari 支持
     borderRadius: "20px",
     overflow: "hidden",
-    boxShadow: "0 40px 120px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.3)",
+    boxShadow: "0 40px 120px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.35)",
     display: "flex",
     flexDirection: "column",
   },
