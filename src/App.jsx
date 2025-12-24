@@ -1140,9 +1140,9 @@ const styles = {
     left: 0,
     width: "100%",
     height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.75)", // 更透明，显示磨砂效果
-    backdropFilter: "blur(40px) saturate(100%)", // 更强的磨砂玻璃效果
-    WebkitBackdropFilter: "blur(40px) saturate(100%)", // Safari 支持
+    backgroundColor: "rgba(0, 0, 0, 0.4)", // 半透明黑色
+    backdropFilter: "blur(50px) saturate(120%)", // 强磨砂玻璃
+    WebkitBackdropFilter: "blur(50px) saturate(120%)", // Safari 支持
     zIndex: 103,
     display: "flex",
     alignItems: "center",
@@ -1153,12 +1153,12 @@ const styles = {
     width: "100%",
     maxWidth: "min(1600px, 95vw)", // iPad 更大
     maxHeight: "min(90vh, calc(100vh - 40px))", // iPad 更高
-    background: "rgba(26, 26, 26, 0.95)", // 更强的磨砂背景
-    backdropFilter: "blur(60px) saturate(130%)", // 极强磨砂玻璃
-    WebkitBackdropFilter: "blur(60px) saturate(130%)", // Safari 支持
+    background: "rgba(26, 26, 26, 0.7)", // 半透明深灰，显示磨砂效果
+    backdropFilter: "blur(80px) saturate(150%)", // 超强磨砂玻璃
+    WebkitBackdropFilter: "blur(80px) saturate(150%)", // Safari 支持
     borderRadius: "20px",
     overflow: "hidden",
-    boxShadow: "0 40px 120px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.15)",
+    boxShadow: "0 40px 120px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.2)",
     display: "flex",
     flexDirection: "column",
   },
