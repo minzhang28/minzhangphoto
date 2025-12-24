@@ -9,48 +9,34 @@ const getImageUrl = (path) => {
   return `${API_BASE_URL}${path}`;
 };
 
-// Camera icons for loading animation - 根据参考图精确复制
 const CameraIcons = {
   rangefinder: (
     <svg width="90" height="60" viewBox="0 0 90 60" fill="none" stroke="currentColor" strokeWidth="2">
-      {/* Main body */}
       <rect x="10" y="20" width="60" height="30" rx="2" />
-      {/* Hot shoe / accessory mount */}
       <rect x="15" y="15" width="8" height="5" rx="1" />
-      {/* Viewfinder bump */}
       <rect x="26" y="17" width="6" height="3" />
-      {/* Lens */}
       <circle cx="50" cy="35" r="12" />
       <circle cx="50" cy="35" r="8" />
-      {/* Shutter button */}
       <circle cx="65" cy="17" r="2" />
     </svg>
   ),
   slr: (
     <svg width="90" height="70" viewBox="0 0 90 70" fill="none" stroke="currentColor" strokeWidth="2">
-      {/* Pentaprism */}
       <path d="M 30 18 L 25 28 L 65 28 L 60 18 Z" />
-      {/* Main body */}
       <rect x="20" y="28" width="50" height="30" rx="2" />
-      {/* Lens */}
       <circle cx="45" cy="43" r="13" />
       <circle cx="45" cy="43" r="9" />
       <circle cx="45" cy="43" r="5" />
-      {/* Shutter button */}
       <circle cx="62" cy="24" r="2" />
     </svg>
   ),
   tlr: (
     <svg width="70" height="85" viewBox="0 0 70 85" fill="none" stroke="currentColor" strokeWidth="2">
-      {/* Main body */}
       <rect x="20" y="15" width="35" height="55" rx="2" />
-      {/* Top lens (viewing) */}
       <circle cx="37.5" cy="30" r="9" />
       <circle cx="37.5" cy="30" r="6" />
-      {/* Bottom lens (taking) */}
       <circle cx="37.5" cy="50" r="9" />
       <circle cx="37.5" cy="50" r="6" />
-      {/* Film advance crank */}
       <circle cx="58" cy="45" r="3.5" />
     </svg>
   )
@@ -630,8 +616,8 @@ export default function App() {
 
 const styles = {
   container: {
-    backgroundColor: "#1a1a1a", // 纯中性深灰
-    color: "#f5f5f5", // 纯白色文字
+    backgroundColor: "#1a1a1a",
+    color: "#f5f5f5",
     fontFamily: "'Helvetica Neue', -apple-system, Arial, sans-serif",
   },
   loadingContainer: {
@@ -662,7 +648,7 @@ const styles = {
     alignItems: "center",
     scrollSnapAlign: "start",
     backgroundColor: "#1a1a1a",
-    padding: "0 20px", // 移动端padding
+    padding: "0 20px",
   },
   heroContent: {
     position: "relative",
@@ -797,7 +783,7 @@ const styles = {
     fontWeight: "500",
     cursor: "pointer",
     transition: "all 0.3s ease",
-    minHeight: "48px", // 移动端触摸友好
+    minHeight: "48px",
   },
   transitionSection: {
     height: "100vh",
@@ -860,7 +846,7 @@ const styles = {
     width: "90%",
     maxWidth: "600px",
     maxHeight: "80vh",
-    background: "rgba(26, 26, 26, 0.98)", // 纯中性深灰
+    background: "rgba(26, 26, 26, 0.98)",
     backdropFilter: "blur(20px)",
     border: "1px solid rgba(255,255,255,0.1)",
     borderRadius: "12px",
@@ -943,7 +929,7 @@ const styles = {
   },
   footer: {
     borderTop: "1px solid rgba(255,255,255,0.08)",
-    padding: "40px 20px", // 移动端responsive padding
+    padding: "40px 20px",
     backgroundColor: "#1a1a1a",
   },
   footerContent: {
@@ -1016,7 +1002,7 @@ const styles = {
     backdropFilter: "blur(10px)",
     border: "1px solid rgba(255,255,255,0.2)",
     color: "#f5f5f5",
-    width: "48px", // 移动端更大的触摸区域
+    width: "48px",
     height: "48px",
     borderRadius: "50%",
     cursor: "pointer",
@@ -1115,7 +1101,7 @@ const styles = {
     position: "fixed",
     bottom: "40px",
     right: "40px",
-    background: "rgba(42, 42, 42, 0.85)", // 纯中性深灰磨砂
+    background: "rgba(42, 42, 42, 0.85)",
     backdropFilter: "blur(16px) saturate(180%)",
     border: "1px solid rgba(255, 255, 255, 0.15)",
     color: "#f5f5f5",
@@ -1138,7 +1124,7 @@ const styles = {
     left: 0,
     width: "100%",
     height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.3)", // 半透明黑色，不模糊
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
     zIndex: 103,
     display: "flex",
     alignItems: "center",
@@ -1147,11 +1133,11 @@ const styles = {
   },
   contactSheetContainer: {
     width: "100%",
-    maxWidth: "min(1600px, 95vw)", // iPad 更大
-    maxHeight: "min(90vh, calc(100vh - 40px))", // iPad 更高
-    background: "rgba(30, 30, 30, 0.2)", // 更透明的深灰 - 从 0.4 降到 0.2
-    backdropFilter: "blur(35px) saturate(120%)", // 更轻的模糊 - 从 80px 降到 35px
-    WebkitBackdropFilter: "blur(35px) saturate(120%)", // Safari 支持
+    maxWidth: "min(1600px, 95vw)",
+    maxHeight: "min(90vh, calc(100vh - 40px))",
+    background: "rgba(30, 30, 30, 0.2)",
+    backdropFilter: "blur(35px) saturate(120%)",
+    WebkitBackdropFilter: "blur(35px) saturate(120%)",
     borderRadius: "20px",
     overflow: "hidden",
     boxShadow: "0 40px 120px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.25)",
@@ -1160,14 +1146,14 @@ const styles = {
   },
   contactSheetGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(clamp(140px, 18vw, 220px), 1fr))", // 响应式：手机2列，iPad 4-5列，桌面6+列
-    gap: "clamp(12px, 1.5vw, 20px)", // 响应式间距
+    gridTemplateColumns: "repeat(auto-fill, minmax(clamp(140px, 18vw, 220px), 1fr))",
+    gap: "clamp(12px, 1.5vw, 20px)",
     overflowY: "auto",
     overflowX: "hidden",
     flex: 1,
-    padding: "clamp(16px, 2.5vw, 32px)", // 响应式内边距
-    alignContent: "start", // 从顶部开始排列，允许滚动
-    WebkitOverflowScrolling: "touch", // iOS 平滑滚动
+    padding: "clamp(16px, 2.5vw, 32px)",
+    alignContent: "start",
+    WebkitOverflowScrolling: "touch",
   },
   contactSheetItem: {
     position: "relative",
@@ -1197,5 +1183,4 @@ const styles = {
     borderRadius: "4px",
     backdropFilter: "blur(4px)",
   },
-  // 移动端媒体查询会通过内联样式动态应用
 };
