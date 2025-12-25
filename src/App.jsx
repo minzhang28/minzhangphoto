@@ -12,35 +12,39 @@ const getImageUrl = (path) => {
 const CameraIcons = {
   rangefinder: (
     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="16" width="56" height="32" rx="2" stroke="currentColor" strokeWidth="2" />
-      <path d="M4 22H60" stroke="currentColor" strokeWidth="2" />
-      <circle cx="36" cy="32" r="10" stroke="currentColor" strokeWidth="2" />
-      <circle cx="36" cy="32" r="7" stroke="currentColor" strokeWidth="2" />
-      <rect x="8" y="24" width="6" height="6" stroke="currentColor" strokeWidth="2" />
-      <rect x="48" y="18" width="8" height="6" stroke="currentColor" strokeWidth="2" />
-      <rect x="10" y="12" width="6" height="4" fill="currentColor" />
-      <rect x="44" y="12" width="4" height="4" stroke="currentColor" strokeWidth="2" />
+      <rect x="6" y="18" width="52" height="28" rx="2" stroke="currentColor" strokeWidth="2" />
+      <rect x="10" y="12" width="10" height="6" rx="1" stroke="currentColor" strokeWidth="2" />
+      <rect x="22" y="12" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="2" />
+      <circle cx="38" cy="32" r="9" stroke="currentColor" strokeWidth="2" />
+      <circle cx="38" cy="32" r="6" stroke="currentColor" strokeWidth="2" />
+      <rect x="10" y="22" width="8" height="8" stroke="currentColor" strokeWidth="2" />
+      <rect x="20" y="22" width="6" height="6" stroke="currentColor" strokeWidth="2" />
+      <path d="M50 14L54 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="52" cy="13" r="1.5" fill="currentColor" />
     </svg>
   ),
   slr: (
     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="6" y="20" width="52" height="32" rx="2" stroke="currentColor" strokeWidth="2" />
-      <path d="M6 26H58" stroke="currentColor" strokeWidth="2" />
-      <path d="M22 20L28 10H36L42 20" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-      <circle cx="32" cy="36" r="11" stroke="currentColor" strokeWidth="2" />
+      <rect x="8" y="22" width="48" height="28" rx="2" stroke="currentColor" strokeWidth="2" />
+      <path d="M20 22L24 12H40L44 22" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+      <rect x="24" y="10" width="16" height="2" fill="currentColor" />
+      <circle cx="32" cy="36" r="10" stroke="currentColor" strokeWidth="2" />
       <circle cx="32" cy="36" r="7" stroke="currentColor" strokeWidth="2" />
-      <rect x="10" y="16" width="8" height="4" stroke="currentColor" strokeWidth="2" />
-      <rect x="46" y="16" width="8" height="4" stroke="currentColor" strokeWidth="2" />
+      <circle cx="32" cy="36" r="4" stroke="currentColor" strokeWidth="2" />
+      <circle cx="48" cy="18" r="2" fill="currentColor" />
+      <rect x="12" y="18" width="6" height="4" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   ),
   tlr: (
     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="18" y="14" width="28" height="44" rx="2" stroke="currentColor" strokeWidth="2" />
-      <path d="M18 14L22 6H42L46 14" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-      <circle cx="32" cy="26" r="7" stroke="currentColor" strokeWidth="2" />
-      <circle cx="32" cy="44" r="8" stroke="currentColor" strokeWidth="2" />
-      <rect x="46" y="24" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="2" />
-      <path d="M18 52H46" stroke="currentColor" strokeWidth="2" />
+      <rect x="20" y="16" width="24" height="36" rx="2" stroke="currentColor" strokeWidth="2" />
+      <path d="M20 16L22 8H42L44 16" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+      <rect x="24" y="10" width="16" height="6" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="32" cy="32" r="7" stroke="currentColor" strokeWidth="2" />
+      <circle cx="32" cy="32" r="5" stroke="currentColor" strokeWidth="2" />
+      <rect x="44" y="28" width="6" height="2" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="48" cy="29" r="2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="24" y="44" width="16" height="4" rx="1" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   )
 };
