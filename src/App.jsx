@@ -9,6 +9,25 @@ const getImageUrl = (path) => {
   return `${API_BASE_URL}${path}`;
 };
 
+const getResponsiveImageProps = (img, useOriginal = false) => {
+  if (typeof img === 'string') {
+    return { src: getImageUrl(img) };
+  }
+
+  if (img.small && img.large && img.original) {
+    const src = useOriginal ? img.original : img.large;
+    return {
+      src: getImageUrl(src),
+      srcSet: `${getImageUrl(img.small)} 640w, ${getImageUrl(img.large)} 1280w, ${getImageUrl(img.original)} 2048w`,
+      sizes: useOriginal
+        ? "(max-width: 640px) 100vw, (max-width: 1280px) 90vw, 1200px"
+        : "(max-width: 640px) 100vw, (max-width: 1280px) 45vw, 220px"
+    };
+  }
+
+  return { src: getImageUrl(img.url || img) };
+};
+
 const CameraIcons = {
   rangefinder: (
     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -81,8 +100,9 @@ function ProjectCard({ project, index, onClick }) {
     <section style={styles.projectCard}>
       <div style={styles.projectBackground}>
         <img
-          src={getImageUrl(project.cover)}
+          {...getResponsiveImageProps(project.cover, true)}
           alt={project.title}
+          loading="lazy"
           style={styles.projectBackgroundImage}
         />
         <div style={styles.projectOverlay} />
@@ -448,8 +468,9 @@ export default function App() {
           >
             <div style={styles.galleryBackgroundWrapper}>
               <img
-                src={getImageUrl(selectedProject.cover)}
+                {...getResponsiveImageProps(selectedProject.cover, true)}
                 alt="bg"
+                loading="eager"
                 style={styles.galleryBackgroundImage}
               />
               <div style={styles.galleryBackgroundOverlay} />
@@ -525,8 +546,9 @@ export default function App() {
                       style={styles.galleryImageContainer}
                     >
                       <img
-                        src={getImageUrl(img.url || img)}
+                        {...getResponsiveImageProps(img, true)}
                         alt=""
+                        loading="lazy"
                         style={styles.galleryImage}
                       />
                     </motion.div>
@@ -596,8 +618,9 @@ export default function App() {
                           }}
                         >
                           <img
-                            src={getImageUrl(img.url || img)}
+                            {...getResponsiveImageProps(img, false)}
                             alt={`Image ${index + 1}`}
+                            loading="lazy"
                             style={styles.contactSheetImage}
                           />
                           <div style={styles.contactSheetNumber}>
