@@ -9,6 +9,25 @@ const getImageUrl = (path) => {
   return `${API_BASE_URL}${path}`;
 };
 
+const getResponsiveImageProps = (img, useOriginal = false) => {
+  if (typeof img === 'string') {
+    return { src: getImageUrl(img) };
+  }
+
+  if (img.small && img.large && img.original) {
+    const src = useOriginal ? img.original : img.large;
+    return {
+      src: getImageUrl(src),
+      srcSet: `${getImageUrl(img.small)} 640w, ${getImageUrl(img.large)} 1280w, ${getImageUrl(img.original)} 2048w`,
+      sizes: useOriginal
+        ? "(max-width: 640px) 100vw, (max-width: 1280px) 90vw, 1200px"
+        : "(max-width: 640px) 100vw, (max-width: 1280px) 45vw, 220px"
+    };
+  }
+
+  return { src: getImageUrl(img.url || img) };
+};
+
 const CameraIcons = {
   rangefinder: (
     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -71,6 +90,13 @@ function LoadingAnimation() {
           {CameraIcons[icons[currentIcon]]}
         </motion.div>
       </AnimatePresence>
+      <motion.p
+        animate={{ opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        style={styles.loadingText}
+      >
+        LOADING
+      </motion.p>
     </div>
   );
 }
@@ -81,8 +107,9 @@ function ProjectCard({ project, index, onClick }) {
     <section style={styles.projectCard}>
       <div style={styles.projectBackground}>
         <img
-          src={getImageUrl(project.cover)}
+          {...getResponsiveImageProps(project.cover, true)}
           alt={project.title}
+          loading="lazy"
           style={styles.projectBackgroundImage}
         />
         <div style={styles.projectOverlay} />
@@ -448,8 +475,9 @@ export default function App() {
           >
             <div style={styles.galleryBackgroundWrapper}>
               <img
-                src={getImageUrl(selectedProject.cover)}
+                {...getResponsiveImageProps(selectedProject.cover, true)}
                 alt="bg"
+                loading="eager"
                 style={styles.galleryBackgroundImage}
               />
               <div style={styles.galleryBackgroundOverlay} />
@@ -457,7 +485,12 @@ export default function App() {
 
             <button
               onClick={() => setSelectedProject(null)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setSelectedProject(null);
+              }}
               style={styles.closeButton}
+              aria-label="Close gallery"
+              tabIndex={0}
             >
               ✕
             </button>
@@ -471,11 +504,15 @@ export default function App() {
                 onClick={() => setShowContactSheet(true)}
                 style={styles.viewToggleButton}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "rgba(60, 60, 60, 0.95)";
+                  e.target.style.backgroundColor = "rgba(50, 48, 45, 0.5)";
+                  e.target.style.transform = "scale(1.1) rotate(90deg)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "rgba(42, 42, 42, 0.85)";
+                  e.target.style.backgroundColor = "rgba(42, 42, 42, 0.3)";
+                  e.target.style.transform = "scale(1) rotate(0deg)";
                 }}
+                aria-label="Open contact sheet"
+                tabIndex={0}
               >
                 {/* Grid Icon - Four Small Squares */}
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -525,8 +562,9 @@ export default function App() {
                       style={styles.galleryImageContainer}
                     >
                       <img
-                        src={getImageUrl(img.url || img)}
+                        {...getResponsiveImageProps(img, true)}
                         alt=""
+                        loading="lazy"
                         style={styles.galleryImage}
                       />
                     </motion.div>
@@ -561,6 +599,12 @@ export default function App() {
                   transition={{ duration: 0.5, ease: "easeOut" }}
                   style={styles.contactSheetOverlay}
                   onClick={() => setShowContactSheet(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') setShowContactSheet(false);
+                  }}
+                  role="dialog"
+                  aria-label="Contact sheet"
+                  tabIndex={-1}
                 >
                   <motion.div
                     initial={{ opacity: 0, y: 60 }}
@@ -596,8 +640,9 @@ export default function App() {
                           }}
                         >
                           <img
-                            src={getImageUrl(img.url || img)}
+                            {...getResponsiveImageProps(img, false)}
                             alt={`Image ${index + 1}`}
+                            loading="lazy"
                             style={styles.contactSheetImage}
                           />
                           <div style={styles.contactSheetNumber}>
@@ -638,6 +683,14 @@ const styles = {
     opacity: 1,
     width: "80px",
     height: "80px",
+    willChange: "transform, opacity",
+  },
+  loadingText: {
+    fontSize: "10px",
+    letterSpacing: "0.2em",
+    fontWeight: "500",
+    color: "#f5f5f5",
+    margin: 0,
   },
   scrollContainer: {
     scrollSnapType: "y mandatory",
@@ -1003,7 +1056,7 @@ const styles = {
     position: "fixed",
     top: "40px",
     right: "40px",
-    background: "rgba(42, 42, 42, 0.3)",
+    background: "rgba(42, 42, 42, 0.4)",
     backdropFilter: "blur(20px)",
     border: "1px solid rgba(255,255,255,0.2)",
     color: "#f5f5f5",
@@ -1016,7 +1069,8 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    transition: "all 0.3s ease",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    willChange: "transform, background-color",
   },
   galleryContent: {
     position: "relative",
@@ -1141,23 +1195,24 @@ const styles = {
     width: "100%",
     maxWidth: "min(1600px, 95vw)",
     maxHeight: "min(90vh, calc(100vh - 40px))",
-    background: "rgba(30, 30, 30, 0.15)",
-    backdropFilter: "blur(20px) saturate(110%)",
-    WebkitBackdropFilter: "blur(20px) saturate(110%)",
+    background: "rgba(30, 30, 30, 0.2)",
+    backdropFilter: "blur(25px) saturate(110%)",
+    WebkitBackdropFilter: "blur(25px) saturate(110%)",
     borderRadius: "20px",
     overflow: "hidden",
     boxShadow: "0 40px 120px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.2)",
     display: "flex",
     flexDirection: "column",
+    willChange: "transform, opacity",
   },
   contactSheetGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(clamp(140px, 18vw, 220px), 1fr))",
-    gap: "clamp(12px, 1.5vw, 20px)",
+    gap: "clamp(8px, 2vw, 24px)",
     overflowY: "auto",
     overflowX: "hidden",
     flex: 1,
-    padding: "clamp(16px, 2.5vw, 32px)",
+    padding: "clamp(12px, 3vw, 40px)",
     alignContent: "start",
     WebkitOverflowScrolling: "touch",
   },
@@ -1168,8 +1223,9 @@ const styles = {
     overflow: "hidden",
     cursor: "pointer",
     transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05)",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.05)",
     backgroundColor: "rgba(42, 42, 42, 0.3)",
+    willChange: "transform",
   },
   contactSheetImage: {
     width: "100%",
@@ -1184,9 +1240,10 @@ const styles = {
     fontSize: "10px",
     fontFamily: "monospace",
     color: "#f5f5f5",
-    backgroundColor: "rgba(0,0,0,0.8)",
+    background: "linear-gradient(135deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7))",
     padding: "4px 8px",
     borderRadius: "4px",
-    backdropFilter: "blur(4px)",
+    backdropFilter: "blur(8px)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
 };
