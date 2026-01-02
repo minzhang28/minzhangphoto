@@ -15,9 +15,8 @@ const getResponsiveImageProps = (img, useOriginal = false) => {
   }
 
   if (img.small && img.large && img.original) {
-    const src = useOriginal ? img.original : img.large;
     return {
-      src: getImageUrl(src),
+      src: getImageUrl(img.small),
       srcSet: `${getImageUrl(img.small)} 640w, ${getImageUrl(img.large)} 1280w, ${getImageUrl(img.original)} 2048w`,
       sizes: useOriginal
         ? "(max-width: 640px) 100vw, (max-width: 1280px) 90vw, 1200px"
