@@ -177,6 +177,7 @@ export default function App() {
           ...item,
           displayId: index + 1,
           images: item.images || item.previewImages || [],
+          year: item.year || new Date().getFullYear(),
         }));
 
         setAlbums(processedData);
