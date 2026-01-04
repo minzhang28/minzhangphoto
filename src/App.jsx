@@ -100,35 +100,35 @@ function LoadingAnimation() {
   );
 }
 
-// Full screen project card component
-function ProjectCard({ project, index, onClick }) {
+// Full screen album card component
+function AlbumCard({ album, index, onClick }) {
   return (
-    <section style={styles.projectCard}>
-      <div style={styles.projectBackground}>
+    <section style={styles.albumCard}>
+      <div style={styles.albumBackground}>
         <img
-          {...getResponsiveImageProps(project.cover, true)}
-          alt={project.title}
+          {...getResponsiveImageProps(album.cover, true)}
+          alt={album.title}
           loading="lazy"
-          style={styles.projectBackgroundImage}
+          style={styles.albumBackgroundImage}
         />
-        <div style={styles.projectOverlay} />
+        <div style={styles.albumOverlay} />
       </div>
 
-      <div style={styles.projectContent}>
+      <div style={styles.albumContent}>
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          style={styles.projectInfo}
+          style={styles.albumInfo}
         >
-          <div style={styles.projectMeta}>
-            <span>{project.location}</span>
-            <span style={styles.projectMetaDot}>·</span>
-            <span>{project.year}</span>
+          <div style={styles.albumMeta}>
+            <span>{album.location}</span>
+            <span style={styles.albumMetaDot}>·</span>
+            <span>{album.year}</span>
           </div>
-          <h2 style={styles.projectTitle}>{project.title}</h2>
-          <p style={styles.projectCount}>{project.count} PHOTOS</p>
+          <h2 style={styles.albumTitle}>{album.title}</h2>
+          <p style={styles.albumCount}>{album.count} PHOTOS</p>
 
           <button
             onClick={onClick}
@@ -142,7 +142,7 @@ function ProjectCard({ project, index, onClick }) {
               e.target.style.color = "#f5f5f5";
             }}
           >
-            VIEW PROJECT
+            VIEW ALBUM
           </button>
         </motion.div>
       </div>
@@ -159,9 +159,9 @@ function ProjectCard({ project, index, onClick }) {
 }
 
 export default function App() {
-  const [projects, setProjects] = useState([]);
+  const [albums, setAlbums] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [filterType, setFilterType] = useState("all");
   const [showContactSheet, setShowContactSheet] = useState(false);
@@ -179,7 +179,7 @@ export default function App() {
           images: item.images || item.previewImages || [],
         }));
 
-        setProjects(processedData);
+        setAlbums(processedData);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -191,30 +191,30 @@ export default function App() {
   }, []);
 
   const stats = useMemo(() => {
-    if (projects.length === 0) return { totalPhotos: 0, uniqueLocations: 0, totalProjects: 0 };
+    if (albums.length === 0) return { totalPhotos: 0, uniqueLocations: 0, totalAlbums: 0 };
 
-    const totalPhotos = projects.reduce(
+    const totalPhotos = albums.reduce(
       (acc, curr) => acc + (curr.count || curr.images?.length || 0),
       0
     );
     const uniqueLocations = new Set(
-      projects.map((p) => p.location).filter(Boolean)
+      albums.map((p) => p.location).filter(Boolean)
     ).size;
-    return { totalPhotos, uniqueLocations, totalProjects: projects.length };
-  }, [projects]);
+    return { totalPhotos, uniqueLocations, totalAlbums: albums.length };
+  }, [albums]);
 
-  const projectsByLocation = useMemo(() => {
+  const albumsByLocation = useMemo(() => {
     const groups = {};
-    projects.forEach(p => {
+    albums.forEach(p => {
       const loc = p.location || "Unknown";
       if (!groups[loc]) groups[loc] = [];
       groups[loc].push(p);
     });
     return groups;
-  }, [projects]);
+  }, [albums]);
 
-  const openProjectGallery = (project) => {
-    setSelectedProject(project);
+  const openAlbumGallery = (album) => {
+    setSelectedAlbum(album);
     setShowNavMenu(false);
   };
 
@@ -244,29 +244,29 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (selectedProject) {
+    if (selectedAlbum) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
-  }, [selectedProject]);
+  }, [selectedAlbum]);
 
   if (isLoading) {
     return <LoadingAnimation />;
   }
 
-  if (projects.length === 0) {
+  if (albums.length === 0) {
     return (
       <div style={styles.loadingContainer}>
-        <span>NO PROJECTS FOUND</span>
+        <span>NO ALBUMS FOUND</span>
       </div>
     );
   }
 
-  // Featured projects (first 3)
-  const featuredProjects = projects.slice(0, 3);
-  // All projects for list view
-  const allProjects = projects;
+  // Featured albums (first 3)
+  const featuredAlbums = albums.slice(0, 3);
+  // All albums for list view
+  const allAlbums = albums;
 
   return (
     <div style={styles.container}>
@@ -285,8 +285,8 @@ export default function App() {
 
             <div style={styles.statsGrid}>
               <div style={styles.statItem}>
-                <span style={styles.statNumber}>{stats.totalProjects}</span>
-                <span style={styles.statLabel}>PROJECTS</span>
+                <span style={styles.statNumber}>{stats.totalAlbums}</span>
+                <span style={styles.statLabel}>ALBUMS</span>
               </div>
               <div style={styles.statDivider} />
               <div style={styles.statItem}>
@@ -307,13 +307,13 @@ export default function App() {
           </div>
         </section>
 
-        {/* Featured Projects - Full Screen Cards */}
-        {featuredProjects.map((project, index) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
+        {/* Featured Albums - Full Screen Cards */}
+        {featuredAlbums.map((album, index) => (
+          <AlbumCard
+            key={album.id}
+            album={album}
             index={index}
-            onClick={() => setSelectedProject(project)}
+            onClick={() => setSelectedAlbum(album)}
           />
         ))}
 
@@ -330,8 +330,8 @@ export default function App() {
             style={styles.transitionContent}
           >
             <div style={styles.transitionLine} />
-            <h3 style={styles.transitionTitle}>EXPLORE ALL PROJECTS</h3>
-            <p style={styles.transitionSubtitle}>{allProjects.length} collections from around the world</p>
+            <h3 style={styles.transitionTitle}>EXPLORE ALL ALBUMS</h3>
+            <p style={styles.transitionSubtitle}>{allAlbums.length} collections from around the world</p>
             <button
               style={styles.exploreButton}
               onMouseEnter={(e) => {
@@ -391,7 +391,7 @@ export default function App() {
                     borderBottom: filterType === "all" ? "2px solid #f5f5f5" : "2px solid transparent"
                   }}
                 >
-                  ALL PROJECTS
+                  ALL ALBUMS
                 </button>
                 <button
                   onClick={() => setFilterType("location")}
@@ -412,10 +412,10 @@ export default function App() {
 
               <div style={styles.navMenuContent}>
                 {filterType === "all" ? (
-                  allProjects.map((project) => (
+                  allAlbums.map((album) => (
                     <div
-                      key={project.id}
-                      onClick={() => openProjectGallery(project)}
+                      key={album.id}
+                      onClick={() => openAlbumGallery(album)}
                       style={styles.navMenuItem}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
@@ -425,20 +425,20 @@ export default function App() {
                       }}
                     >
                       <span style={styles.navItemNumber}>
-                        {String(project.displayId).padStart(2, "0")}
+                        {String(album.displayId).padStart(2, "0")}
                       </span>
-                      <span style={styles.navItemTitle}>{project.title}</span>
-                      <span style={styles.navItemLocation}>{project.location}</span>
+                      <span style={styles.navItemTitle}>{album.title}</span>
+                      <span style={styles.navItemLocation}>{album.location}</span>
                     </div>
                   ))
                 ) : (
-                  Object.entries(projectsByLocation).map(([location, locationProjects]) => (
+                  Object.entries(albumsByLocation).map(([location, locationAlbums]) => (
                     <div key={location} style={styles.navLocationGroup}>
                       <div style={styles.navLocationTitle}>{location}</div>
-                      {locationProjects.map((project) => (
+                      {locationAlbums.map((album) => (
                         <div
-                          key={project.id}
-                          onClick={() => openProjectGallery(project)}
+                          key={album.id}
+                          onClick={() => openAlbumGallery(album)}
                           style={styles.navMenuItem}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
@@ -448,9 +448,9 @@ export default function App() {
                           }}
                         >
                           <span style={styles.navItemNumber}>
-                            {String(project.displayId).padStart(2, "0")}
+                            {String(album.displayId).padStart(2, "0")}
                           </span>
-                          <span style={styles.navItemTitle}>{project.title}</span>
+                          <span style={styles.navItemTitle}>{album.title}</span>
                         </div>
                       ))}
                     </div>
@@ -464,7 +464,7 @@ export default function App() {
 
       {/* Gallery Overlay */}
       <AnimatePresence>
-        {selectedProject && (
+        {selectedAlbum && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -474,7 +474,7 @@ export default function App() {
           >
             <div style={styles.galleryBackgroundWrapper}>
               <img
-                {...getResponsiveImageProps(selectedProject.cover, true)}
+                {...getResponsiveImageProps(selectedAlbum.cover, true)}
                 alt="bg"
                 loading="eager"
                 style={styles.galleryBackgroundImage}
@@ -483,9 +483,9 @@ export default function App() {
             </div>
 
             <button
-              onClick={() => setSelectedProject(null)}
+              onClick={() => setSelectedAlbum(null)}
               onKeyDown={(e) => {
-                if (e.key === 'Escape') setSelectedProject(null);
+                if (e.key === 'Escape') setSelectedAlbum(null);
               }}
               style={styles.closeButton}
               aria-label="Close gallery"
@@ -538,19 +538,19 @@ export default function App() {
               style={styles.galleryContent}
             >
               <div style={styles.galleryHeader}>
-                <h1 style={styles.galleryTitle}>{selectedProject.title}</h1>
+                <h1 style={styles.galleryTitle}>{selectedAlbum.title}</h1>
                 <div style={styles.galleryMeta}>
-                  <span>{selectedProject.location}</span>
+                  <span>{selectedAlbum.location}</span>
                   <span style={styles.galleryMetaDot}>·</span>
-                  <span>{selectedProject.year}</span>
+                  <span>{selectedAlbum.year}</span>
                   <span style={styles.galleryMetaDot}>·</span>
-                  <span>{selectedProject.images.length} IMAGES</span>
+                  <span>{selectedAlbum.images.length} IMAGES</span>
                 </div>
               </div>
 
               <div style={styles.galleryScroll}>
-                {selectedProject.images &&
-                  selectedProject.images.map((img, index) => (
+                {selectedAlbum.images &&
+                  selectedAlbum.images.map((img, index) => (
                     <motion.div
                       key={index}
                       ref={(el) => (imageRefs.current[index] = el)}
@@ -571,9 +571,9 @@ export default function App() {
 
                 <div style={styles.galleryFooter}>
                   <div style={styles.galleryFooterLine} />
-                  <span style={styles.galleryFooterText}>END OF PROJECT</span>
+                  <span style={styles.galleryFooterText}>END OF ALBUM</span>
                   <button
-                    onClick={() => setSelectedProject(null)}
+                    onClick={() => setSelectedAlbum(null)}
                     style={styles.galleryCloseButton}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = "#3a3a3a";
@@ -615,7 +615,7 @@ export default function App() {
                   >
                     {/* Grid */}
                     <div style={styles.contactSheetGrid}>
-                      {selectedProject.images.map((img, index) => (
+                      {selectedAlbum.images.map((img, index) => (
                         <motion.div
                           key={index}
                           initial={{ opacity: 0, y: 30 }}
@@ -776,7 +776,7 @@ const styles = {
   scrollArrowDown: {
     fontSize: "16px",
   },
-  projectCard: {
+  albumCard: {
     position: "relative",
     height: "100vh",
     display: "flex",
@@ -784,46 +784,46 @@ const styles = {
     justifyContent: "center",
     scrollSnapAlign: "start",
   },
-  projectBackground: {
+  albumBackground: {
     position: "absolute",
     inset: 0,
   },
-  projectBackgroundImage: {
+  albumBackgroundImage: {
     width: "100%",
     height: "100%",
     objectFit: "cover",
     opacity: 0.5,
   },
-  projectOverlay: {
+  albumOverlay: {
     position: "absolute",
     inset: 0,
     background: "linear-gradient(to bottom, rgba(26,26,26,0.7) 0%, rgba(26,26,26,0.95) 100%)",
   },
-  projectContent: {
+  albumContent: {
     position: "relative",
     zIndex: 10,
     textAlign: "center",
     padding: "40px",
   },
-  projectInfo: {
+  albumInfo: {
     maxWidth: "800px",
   },
-  projectMeta: {
+  albumMeta: {
     fontSize: "13px",
     letterSpacing: "0.1em",
     opacity: 0.6,
     marginBottom: "20px",
   },
-  projectMetaDot: {
+  albumMetaDot: {
     margin: "0 8px",
   },
-  projectTitle: {
+  albumTitle: {
     fontSize: "clamp(50px, 10vw, 100px)",
     fontWeight: "200",
     letterSpacing: "-0.02em",
     margin: "0 0 16px 0",
   },
-  projectCount: {
+  albumCount: {
     fontSize: "12px",
     letterSpacing: "0.15em",
     opacity: 0.5,
