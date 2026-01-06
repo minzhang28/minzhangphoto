@@ -130,6 +130,12 @@ function AlbumCard({ album, index, onClick }) {
           <h2 style={styles.albumTitle}>{album.title}</h2>
           <p style={styles.albumCount}>{album.count} PHOTOS</p>
 
+          {album.story && (
+            <p style={styles.albumStoryPreview}>
+              {album.story.substring(0, 60)}...
+            </p>
+          )}
+
           <button
             onClick={onClick}
             style={styles.viewButton}
@@ -173,11 +179,22 @@ export default function App() {
         const response = await fetch(`${API_BASE_URL}/api/collections`);
         const data = await response.json();
 
+        // Dummy stories for demonstration
+        const dummyStories = [
+          "那是一个寻常的午后，阳光透过云层洒在街道上。我带着相机漫步，捕捉那些稍纵即逝的瞬间。光影交错间，城市的呼吸变得清晰可见，每一个角落都藏着独特的故事。",
+          "旅行的意义不在于目的地，而在于路上的风景。当我按下快门的那一刻，时间仿佛静止了。这些照片不仅记录了眼前的景象，更承载了当时的心情和感受。",
+          "在这片土地上，我找到了内心的宁静。镜头下的每一帧画面，都是对生活的诗意诠释。光线、构图、情感，三者交织成了这组作品的灵魂。",
+          "摄影教会我用不同的视角看世界。清晨的薄雾，傍晚的金光，夜晚的霓虹，每个时刻都有其独特的美。这些影像是时间的切片，承载着无法用言语表达的情绪。",
+          "这座城市总是充满惊喜。转角处的一束光，窗边的一个剪影，都可能成为绝佳的画面。我试图通过这些照片，分享我眼中的世界，那些容易被忽略却值得珍藏的瞬间。",
+          "每一次按下快门，都是一次对美的追寻。在平凡的日常中发现不平凡，在繁忙的都市里寻找片刻宁静。这些作品记录的不仅是景象，更是一种生活态度和情怀。"
+        ];
+
         const processedData = data.map((item, index) => ({
           ...item,
           displayId: index + 1,
           images: item.images || item.previewImages || [],
           year: item.year || new Date().getFullYear(),
+          story: item.story || dummyStories[index % dummyStories.length],
         }));
 
         setAlbums(processedData);
@@ -547,6 +564,19 @@ export default function App() {
                   <span style={styles.galleryMetaDot}>·</span>
                   <span>{selectedAlbum.images.length} IMAGES</span>
                 </div>
+
+                {selectedAlbum.story && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                    style={styles.galleryStory}
+                  >
+                    <div style={styles.galleryStoryDivider} />
+                    <p style={styles.galleryStoryText}>{selectedAlbum.story}</p>
+                    <div style={styles.galleryStoryDivider} />
+                  </motion.div>
+                )}
               </div>
 
               <div style={styles.galleryScroll}>
@@ -828,7 +858,16 @@ const styles = {
     fontSize: "12px",
     letterSpacing: "0.15em",
     opacity: 0.5,
+    marginBottom: "24px",
+  },
+  albumStoryPreview: {
+    fontSize: "15px",
+    lineHeight: "1.8",
+    opacity: 0.7,
     marginBottom: "40px",
+    maxWidth: "600px",
+    margin: "0 auto 40px",
+    fontWeight: "300",
   },
   viewButton: {
     padding: "16px 40px",
@@ -1102,6 +1141,26 @@ const styles = {
   },
   galleryMetaDot: {
     opacity: 0.4,
+  },
+  galleryStory: {
+    marginTop: "60px",
+    maxWidth: "700px",
+    margin: "60px auto 0",
+  },
+  galleryStoryDivider: {
+    width: "40px",
+    height: "1px",
+    backgroundColor: "rgba(255,255,255,0.3)",
+    margin: "30px auto",
+  },
+  galleryStoryText: {
+    fontSize: "16px",
+    lineHeight: "2",
+    opacity: 0.8,
+    fontWeight: "300",
+    letterSpacing: "0.02em",
+    textAlign: "justify",
+    margin: 0,
   },
   galleryScroll: {
     display: "flex",
