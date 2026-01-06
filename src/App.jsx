@@ -130,6 +130,12 @@ function AlbumCard({ album, index, onClick }) {
           <h2 style={styles.albumTitle}>{album.title}</h2>
           <p style={styles.albumCount}>{album.count} PHOTOS</p>
 
+          {album.story && (
+            <p style={styles.albumStoryPreview}>
+              {album.story.substring(0, 60)}...
+            </p>
+          )}
+
           <button
             onClick={onClick}
             style={styles.viewButton}
@@ -178,6 +184,7 @@ export default function App() {
           displayId: index + 1,
           images: item.images || item.previewImages || [],
           year: item.year || new Date().getFullYear(),
+          story: item.story || null,
         }));
 
         setAlbums(processedData);
@@ -547,6 +554,19 @@ export default function App() {
                   <span style={styles.galleryMetaDot}>·</span>
                   <span>{selectedAlbum.images.length} IMAGES</span>
                 </div>
+
+                {selectedAlbum.story && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                    style={styles.galleryStory}
+                  >
+                    <div style={styles.galleryStoryDivider} />
+                    <p style={styles.galleryStoryText}>{selectedAlbum.story}</p>
+                    <div style={styles.galleryStoryDivider} />
+                  </motion.div>
+                )}
               </div>
 
               <div style={styles.galleryScroll}>
@@ -676,7 +696,7 @@ const styles = {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    gap: "30px",
+    gap: "32px",
   },
   loadingIconWrapper: {
     color: "#f5f5f5",
@@ -717,11 +737,11 @@ const styles = {
     fontSize: "clamp(60px, 12vw, 140px)",
     fontWeight: "200",
     letterSpacing: "-0.02em",
-    margin: "0 0 60px 0",
+    margin: "0 0 64px 0",
   },
   statsGrid: {
     display: "flex",
-    gap: "40px",
+    gap: "48px",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -810,10 +830,12 @@ const styles = {
     maxWidth: "800px",
   },
   albumMeta: {
-    fontSize: "13px",
-    letterSpacing: "0.1em",
-    opacity: 0.6,
+    fontSize: "11px",
+    letterSpacing: "0.12em",
+    opacity: 0.5,
     marginBottom: "20px",
+    textTransform: "uppercase",
+    fontWeight: "500",
   },
   albumMetaDot: {
     margin: "0 8px",
@@ -828,13 +850,22 @@ const styles = {
     fontSize: "12px",
     letterSpacing: "0.15em",
     opacity: 0.5,
+    marginBottom: "24px",
+  },
+  albumStoryPreview: {
+    fontSize: "15px",
+    lineHeight: "1.8",
+    opacity: 0.7,
     marginBottom: "40px",
+    maxWidth: "600px",
+    margin: "0 auto 40px",
+    fontWeight: "300",
   },
   viewButton: {
     padding: "16px 40px",
     background: "transparent",
     border: "2px solid #f5f5f5",
-    borderRadius: "30px",
+    borderRadius: "32px",
     color: "#f5f5f5",
     fontSize: "12px",
     letterSpacing: "0.15em",
@@ -842,6 +873,7 @@ const styles = {
     cursor: "pointer",
     transition: "all 0.3s ease",
     minHeight: "48px",
+    boxShadow: "0 0 0 0 rgba(245, 245, 245, 0)",
   },
   transitionSection: {
     height: "100vh",
@@ -860,7 +892,7 @@ const styles = {
     width: "100px",
     height: "1px",
     backgroundColor: "rgba(255,255,255,0.2)",
-    margin: "0 auto 30px",
+    margin: "0 auto 32px",
   },
   transitionTitle: {
     fontSize: "clamp(24px, 5vw, 48px)",
@@ -872,21 +904,22 @@ const styles = {
     fontSize: "14px",
     opacity: 0.5,
     letterSpacing: "0.05em",
-    marginBottom: "30px",
+    marginBottom: "32px",
   },
   exploreButton: {
     padding: "16px 40px",
     background: "transparent",
     border: "2px solid #f5f5f5",
-    borderRadius: "30px",
+    borderRadius: "32px",
     color: "#f5f5f5",
     fontSize: "12px",
     letterSpacing: "0.15em",
     fontWeight: "500",
     cursor: "pointer",
     transition: "all 0.3s ease",
-    marginBottom: "30px",
-    minHeight: "48px", // 移动端触摸友好
+    marginBottom: "32px",
+    minHeight: "48px",
+    boxShadow: "0 0 0 0 rgba(245, 245, 245, 0)",
   },
   navOverlay: {
     position: "fixed",
@@ -905,11 +938,11 @@ const styles = {
     maxWidth: "600px",
     maxHeight: "80vh",
     background: "rgba(26, 26, 26, 0.98)",
-    backdropFilter: "blur(20px)",
+    backdropFilter: "blur(24px)",
     border: "1px solid rgba(255,255,255,0.1)",
-    borderRadius: "12px",
+    borderRadius: "16px",
     overflow: "hidden",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+    boxShadow: "0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)",
   },
   navMenuHeader: {
     display: "flex",
@@ -979,11 +1012,12 @@ const styles = {
     marginBottom: "20px",
   },
   navLocationTitle: {
-    fontSize: "11px",
-    letterSpacing: "0.15em",
+    fontSize: "10px",
+    letterSpacing: "0.16em",
     opacity: 0.4,
     padding: "12px 16px 8px",
     fontWeight: "600",
+    textTransform: "uppercase",
   },
   footer: {
     borderTop: "1px solid rgba(255,255,255,0.08)",
@@ -1093,15 +1127,37 @@ const styles = {
     letterSpacing: "-0.02em",
   },
   galleryMeta: {
-    fontSize: "13px",
-    letterSpacing: "0.1em",
-    opacity: 0.6,
+    fontSize: "11px",
+    letterSpacing: "0.12em",
+    opacity: 0.5,
     display: "flex",
     justifyContent: "center",
     gap: "16px",
+    textTransform: "uppercase",
+    fontWeight: "500",
   },
   galleryMetaDot: {
     opacity: 0.4,
+  },
+  galleryStory: {
+    marginTop: "64px",
+    maxWidth: "700px",
+    margin: "64px auto 0",
+  },
+  galleryStoryDivider: {
+    width: "40px",
+    height: "1px",
+    backgroundColor: "rgba(255,255,255,0.3)",
+    margin: "32px auto",
+  },
+  galleryStoryText: {
+    fontSize: "16px",
+    lineHeight: "1.9",
+    opacity: 0.75,
+    fontWeight: "300",
+    letterSpacing: "0.01em",
+    textAlign: "center",
+    margin: 0,
   },
   galleryScroll: {
     display: "flex",
@@ -1114,8 +1170,8 @@ const styles = {
     width: "90%",
     maxWidth: "1200px",
     position: "relative",
-    boxShadow: "0 30px 100px rgba(0,0,0,0.15)",
-    borderRadius: "4px",
+    boxShadow: "0 32px 96px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.02)",
+    borderRadius: "8px",
     overflow: "hidden",
   },
   galleryImage: {
@@ -1124,15 +1180,15 @@ const styles = {
     display: "block",
   },
   galleryFooter: {
-    marginTop: "60px",
+    marginTop: "64px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "20px",
+    gap: "24px",
     paddingBottom: "40px",
   },
   galleryFooterLine: {
-    width: "60px",
+    width: "64px",
     height: "1px",
     backgroundColor: "rgba(255,255,255,0.2)",
   },
@@ -1142,12 +1198,12 @@ const styles = {
     opacity: 0.5,
   },
   galleryCloseButton: {
-    marginTop: "30px",
+    marginTop: "32px",
     padding: "16px 40px",
     background: "rgba(42, 42, 42, 0.3)",
-    backdropFilter: "blur(20px)",
+    backdropFilter: "blur(24px)",
     border: "1px solid rgba(255,255,255,0.15)",
-    borderRadius: "30px",
+    borderRadius: "32px",
     color: "#f5f5f5",
     fontSize: "12px",
     letterSpacing: "0.15em",
@@ -1155,6 +1211,7 @@ const styles = {
     cursor: "pointer",
     transition: "all 0.3s ease",
     minHeight: "48px",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
   },
   // View Toggle Button (Floating) - The Glass Toggle
   viewToggleButton: {
@@ -1162,7 +1219,7 @@ const styles = {
     bottom: "40px",
     right: "40px",
     background: "rgba(42, 42, 42, 0.3)",
-    backdropFilter: "blur(20px) saturate(120%)",
+    backdropFilter: "blur(24px) saturate(120%)",
     border: "1px solid rgba(255, 255, 255, 0.2)",
     color: "#f5f5f5",
     width: "60px",
@@ -1175,7 +1232,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
-    boxShadow: "0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)",
+    boxShadow: "0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)",
   },
   // Contact Sheet Overlay - The Frosted Glass
   contactSheetOverlay: {
@@ -1196,9 +1253,9 @@ const styles = {
     maxWidth: "min(1600px, 95vw)",
     maxHeight: "min(90vh, calc(100vh - 40px))",
     background: "rgba(30, 30, 30, 0.2)",
-    backdropFilter: "blur(25px) saturate(110%)",
-    WebkitBackdropFilter: "blur(25px) saturate(110%)",
-    borderRadius: "20px",
+    backdropFilter: "blur(28px) saturate(110%)",
+    WebkitBackdropFilter: "blur(28px) saturate(110%)",
+    borderRadius: "24px",
     overflow: "hidden",
     boxShadow: "0 40px 120px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.2)",
     display: "flex",
@@ -1219,11 +1276,11 @@ const styles = {
   contactSheetItem: {
     position: "relative",
     aspectRatio: "3 / 2",
-    borderRadius: "8px",
+    borderRadius: "12px",
     overflow: "hidden",
     cursor: "pointer",
     transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.05)",
+    boxShadow: "0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.05)",
     backgroundColor: "rgba(42, 42, 42, 0.3)",
     willChange: "transform",
   },
