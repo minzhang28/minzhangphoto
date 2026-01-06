@@ -179,21 +179,12 @@ export default function App() {
         const response = await fetch(`${API_BASE_URL}/api/collections`);
         const data = await response.json();
 
-        const dummyStories = [
-          "It was an ordinary afternoon when light filtered through the clouds onto the streets. Walking with my camera, I captured those fleeting moments. Between light and shadow, the city's breath became visible, every corner hiding its unique story.",
-          "The meaning of travel lies not in the destination, but in the scenery along the way. When I pressed the shutter, time seemed to stand still. These photos not only record the scenes before me, but also carry the emotions and feelings of that moment.",
-          "On this land, I found inner peace. Every frame under the lens is a poetic interpretation of life. Light, composition, emotion - these three elements interweave to form the soul of this work.",
-          "Photography taught me to see the world from different perspectives. Morning mist, evening golden light, neon at night - each moment has its unique beauty. These images are slices of time, carrying emotions that words cannot express.",
-          "This city is always full of surprises. A beam of light around the corner, a silhouette by the window - any of these could become a perfect frame. Through these photos, I try to share my view of the world, those moments easily overlooked yet worth cherishing.",
-          "Every press of the shutter is a pursuit of beauty. Finding the extraordinary in the ordinary daily life, seeking moments of tranquility in the busy city. These works record not only scenes, but also an attitude and sentiment towards life."
-        ];
-
         const processedData = data.map((item, index) => ({
           ...item,
           displayId: index + 1,
           images: item.images || item.previewImages || [],
           year: item.year || new Date().getFullYear(),
-          story: item.story || dummyStories[index % dummyStories.length],
+          story: item.story || null,
         }));
 
         setAlbums(processedData);
