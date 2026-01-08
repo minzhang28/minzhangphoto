@@ -271,8 +271,8 @@ export default function App() {
     );
   }
 
-  // Featured albums (first 3)
-  const featuredAlbums = albums.slice(0, 3);
+  // Featured albums (first 5)
+  const featuredAlbums = albums.slice(0, 5);
   // All albums for list view
   const allAlbums = albums;
 
